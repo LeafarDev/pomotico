@@ -1,6 +1,8 @@
-export interface TimerProps {
-  /** The text to display inside the button */
-  title: string;
-  /** Whether the button can be interacted with */
-  disabled: boolean;
+export interface TimerPomodoro {
+  remainingTime: number;
+  isRunning: boolean;
+  start: () => void;
+  pause: () => void;
+  reset: () => void;
+  formatTime: () => string;
 }
