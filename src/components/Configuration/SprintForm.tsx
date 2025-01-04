@@ -27,7 +27,7 @@ const SprintForm = (): ReactElement => {
       className="modal-content"
       overlayClassName="modal-overlay"
     >
-      <h2>Configure Sprint Settings</h2>
+      <h2>Configurações</h2>
       <FormWrapper>
         <form id="sprint-form" onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>
