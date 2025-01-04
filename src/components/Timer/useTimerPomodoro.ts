@@ -1,67 +1,133 @@
 import { useAtom } from "jotai";
-import { useEffect } from "react";
-import {
-  isRunningAtom,
-  remainingTimeAtom,
-  sprintConfigData,
-} from "../../atoms/Timer.tsx";
-import { TimerPomodoro } from "../../types.ts";
+import { useEffect, useState } from "react";
+import { sprintConfigData, timerData } from "../../atoms/Timer.tsx";
+import { TimerFocusMode, TimerPomodoro, TimerStatus } from "../../types.ts";
+import { toMilliseconds } from "../../utils/timeUtils.ts";
 
 export const useTimerPomodoro = (): TimerPomodoro => {
-  const [configData, _] = useAtom(sprintConfigData);
-  const [remainingTime, setRemainingTime] = useAtom(remainingTimeAtom);
-  const [isRunning, setIsRunning] = useAtom(isRunningAtom);
+  const [configData] = useAtom(sprintConfigData);
+  const [timer, setTimer] = useAtom(timerData);
+  const [startButtonText, setstartButtonText] = useState("Iniciar Sprint");
 
-  useEffect(() => {
-    if (!isRunning) return;
-
-    const interval = setInterval(() => {
-      setRemainingTime((prev) => {
-        if (prev <= 1000) {
-          clearInterval(interval);
-          setIsRunning(false);
-          return 0;
-        }
-        return prev - 1000;
-      });
-    }, 1000);
-
-    return (): void => clearInterval(interval);
-  }, [isRunning, setIsRunning, setRemainingTime, configData]);
-
-  const secondsToMilliseconds = (seconds: number): number => seconds * 1000;
-  const minutesToMilliseconds = (minutes: number): number =>
-    minutes * 60 * 1000;
-
-  const start = (): void => setIsRunning(true);
-
-  const pause = (): void => setIsRunning(false);
-
-  const reset = (): void => {
-    const { sprintTime } = configData;
-    setIsRunning(false);
-    const remainingTime =
-      secondsToMilliseconds(sprintTime.seconds) +
-      minutesToMilliseconds(sprintTime.minutes);
-    setRemainingTime(remainingTime);
+  const checkAlreadyStarted = (): boolean => {
+    let originalRemainingtime = toMilliseconds(
+      configData.restTime.minutes,
+      configData.restTime.seconds,
+    );
+    if (timer.mode === TimerFocusMode.Focusing) {
+      originalRemainingtime = toMilliseconds(
+        configData.sprintTime.minutes,
+        configData.sprintTime.seconds,
+      );
+    }
+    return timer.remainingTime < originalRemainingtime;
   };
 
-  const formatTime = (): string => {
-    const minutes = Math.floor(remainingTime / 60000)
-      .toString()
-      .padStart(2, "0");
-    const seconds = ((remainingTime % 60000) / 1000)
-      .toFixed(0)
-      .padStart(2, "0");
-    return `${minutes}:${seconds}`;
+  const getStartButtonText = (
+    isRunning: boolean,
+    mode: TimerFocusMode,
+    alreadyStarted: boolean,
+  ): string => {
+    if (isRunning) {
+      return "Pausar";
+    }
+
+    if (mode === TimerFocusMode.Focusing) {
+      return alreadyStarted ? "Retomar Sprint" : "Iniciar Sprint";
+    }
+
+    return alreadyStarted ? "Retomar Descanso" : "Iniciar Foco";
+  };
+
+  useEffect(() => {
+    const alreadyStarted = checkAlreadyStarted();
+    const buttonText = getStartButtonText(
+      timer.isRunning,
+      timer.mode,
+      alreadyStarted,
+    );
+    setstartButtonText(buttonText);
+  }, [checkAlreadyStarted, timer]);
+
+  const makeNewFocusModeObject = (): TimerStatus => {
+    const remainingTime = toMilliseconds(
+      configData.sprintTime.minutes,
+      configData.sprintTime.seconds,
+    );
+    return {
+      remainingTime,
+      isRunning: false,
+      mode: TimerFocusMode.Focusing,
+    };
+  };
+
+  const makeNewRestModeObject = (): TimerStatus => {
+    const remainingTime = toMilliseconds(
+      configData.restTime.minutes,
+      configData.restTime.seconds,
+    );
+    return {
+      remainingTime,
+      isRunning: false,
+      mode: TimerFocusMode.Resting,
+    };
+  };
+
+  const handleTimerCompletion = (): TimerStatus => {
+    if (timer.mode === TimerFocusMode.Focusing) {
+      return makeNewRestModeObject();
+    }
+    return makeNewFocusModeObject();
+  };
+
+  useEffect(() => {
+    const updateTimerEverySecond = (): void => {
+      setTimer((timerStatus: TimerStatus): TimerStatus => {
+        if (timerStatus.remainingTime <= 1000) {
+          return handleTimerCompletion();
+        }
+        return {
+          ...timer,
+          remainingTime: timerStatus.remainingTime - 1000,
+        };
+      });
+    };
+
+    if (!timer.isRunning) return;
+
+    const interval = setInterval(updateTimerEverySecond, 1000);
+
+    return (): void => clearInterval(interval);
+  }, [timer.isRunning, configData]);
+
+  const start = (): void => {
+    setTimer({ ...timer, isRunning: true });
+  };
+
+  const pause = (): void => setTimer({ ...timer, isRunning: false });
+
+  const reset = (): void => {
+    const { sprintTime, restTime } = configData;
+    setTimer({ ...timer, isRunning: false });
+
+    if (timer.mode === TimerFocusMode.Focusing) {
+      setTimer({
+        ...timer,
+        remainingTime: toMilliseconds(sprintTime.minutes, sprintTime.seconds),
+        isRunning: false,
+      });
+    } else {
+      setTimer({
+        ...timer,
+        remainingTime: toMilliseconds(restTime.minutes, restTime.seconds),
+      });
+    }
   };
 
   return {
-    remainingTime,
-    isRunning,
     start,
     pause,
     reset,
-    formatTime,
+    startButtonText,
   };
 };

@@ -1,8 +1,17 @@
 export interface TimerPomodoro {
-  remainingTime: number;
-  isRunning: boolean;
   start: () => void;
   pause: () => void;
   reset: () => void;
-  formatTime: () => string;
+  startButtonText: string;
 }
+
+export enum TimerFocusMode {
+  Focusing,
+  Resting,
+}
+
+export type TimerStatus = {
+  mode: TimerFocusMode;
+  isRunning: boolean;
+  remainingTime: number;
+};

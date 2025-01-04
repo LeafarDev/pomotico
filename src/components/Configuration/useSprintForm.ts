@@ -5,7 +5,13 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useHookFormMask } from "use-mask-input";
 import { sprintFormSchema, SprintFormValues } from "./sprintFormValidation.ts";
-import { isConfigModalOpen, sprintConfigData } from "../../atoms/Timer.tsx";
+import {
+  isConfigModalOpen,
+  sprintConfigData,
+  timerData,
+} from "../../atoms/Timer.tsx";
+import { TimerFocusMode } from "../../types.ts";
+import { toMilliseconds } from "../../utils/timeUtils.ts";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -20,6 +26,7 @@ const Toast = Swal.mixin({
 
 export const useSprintFormLogic = () => {
   const [formData, setFormData] = useAtom(sprintConfigData);
+  const [timer, setTimer] = useAtom(timerData);
   const [isModalOpen, setIsModalOpen] = useAtom(isConfigModalOpen);
 
   const {
@@ -68,6 +75,22 @@ export const useSprintFormLogic = () => {
     };
 
     setFormData(formattedData);
+
+    if (!timer.isRunning) {
+      if (timer.mode === TimerFocusMode.Focusing) {
+        const remainingTime = toMilliseconds(
+          parseInt(String(data.sprintTime.minutes), 10),
+          parseInt(String(data.sprintTime.seconds), 10),
+        );
+        setTimer({ ...timer, remainingTime });
+      } else {
+        const remainingTime = toMilliseconds(
+          parseInt(String(data.restTime.minutes), 10),
+          parseInt(String(data.restTime.seconds), 10),
+        );
+        setTimer({ ...timer, remainingTime });
+      }
+    }
 
     setIsModalOpen(false);
     Toast.fire({

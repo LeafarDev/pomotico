@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 export const TimerContent = styled.div`
   display: flex;
@@ -9,7 +9,7 @@ export const TimerContent = styled.div`
 `;
 
 export const TimeRemaining = styled.span`
-  font-size: clamp(8em, 20vw, 17em);
+  font-size: clamp(8em, 17vw, 17em);
   font-weight: 700;
   padding: 1rem;
   color: #dfd8d8;
@@ -50,5 +50,44 @@ export const ButtonsController = styled.div`
     &:nth-child(2):hover {
       background-color: #e53935;
     }
+  }
+`;
+
+export const GifImage = styled.img`
+  width: 80px;
+  height: 80px;
+  margin-bottom: 0.5rem;
+`;
+
+export const StatusWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const dotAnimation = keyframes`
+    0% {
+        content: ".";
+    }
+    33% {
+        content: "..";
+    }
+    66% {
+        content: "...";
+    }
+    100% {
+        content: ".";
+    }
+`;
+
+export const StatusText = styled.div<{ $isFocusing: boolean }>`
+  font-size: 18px;
+  font-weight: bold;
+  color: #dfd8d8;
+
+  &::after {
+    content: "${(props) => (props.$isFocusing ? "Focando" : "Descansando")}";
+    animation: ${dotAnimation} 1.5s infinite;
   }
 `;
