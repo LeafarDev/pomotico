@@ -76,20 +76,18 @@ export const useSprintFormLogic = () => {
 
     setFormData(formattedData);
 
-    if (!timer.isRunning) {
-      if (timer.mode === TimerFocusMode.Focusing) {
-        const remainingTime = toMilliseconds(
-          parseInt(String(data.sprintTime.minutes), 10),
-          parseInt(String(data.sprintTime.seconds), 10),
-        );
-        setTimer({ ...timer, remainingTime });
-      } else {
-        const remainingTime = toMilliseconds(
-          parseInt(String(data.restTime.minutes), 10),
-          parseInt(String(data.restTime.seconds), 10),
-        );
-        setTimer({ ...timer, remainingTime });
-      }
+    if (timer.mode === TimerFocusMode.Focusing) {
+      const remainingTime = toMilliseconds(
+        parseInt(String(data.sprintTime.minutes), 10),
+        parseInt(String(data.sprintTime.seconds), 10),
+      );
+      setTimer({ ...timer, remainingTime });
+    } else {
+      const remainingTime = toMilliseconds(
+        parseInt(String(data.restTime.minutes), 10),
+        parseInt(String(data.restTime.seconds), 10),
+      );
+      setTimer({ ...timer, remainingTime });
     }
 
     setIsModalOpen(false);

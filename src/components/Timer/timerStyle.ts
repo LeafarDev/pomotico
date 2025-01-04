@@ -27,7 +27,7 @@ export const ButtonsController = styled.div`
     font-size: 1rem;
     font-weight: 600;
     color: white;
-    background-color: #4caf50;
+    background-color: #f44336;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -36,7 +36,7 @@ export const ButtonsController = styled.div`
       transform 0.2s ease;
 
     &:hover {
-      background-color: #45a049;
+      background-color: #e53935;
     }
 
     &:active {
@@ -44,11 +44,11 @@ export const ButtonsController = styled.div`
     }
 
     &:nth-child(2) {
-      background-color: #f44336;
+      background-color: #02363e;
     }
 
     &:nth-child(2):hover {
-      background-color: #e53935;
+      background-color: #02282c;
     }
   }
 `;
