@@ -1,3 +1,4 @@
+import { useAtom } from "jotai/index";
 import { ReactElement } from "react";
 import { FaCog } from "react-icons/fa";
 import { MdAutoGraph } from "react-icons/md";
@@ -8,10 +9,14 @@ import {
   NavButtons,
 } from "./headerStyle";
 import ClockIcon from "../../assets/pomotico-logo-white.svg";
+import { isConfigModalOpen } from "../../atoms/Timer.tsx";
 
 export const Header = (): ReactElement => {
-  const handleConfigClick = () => {
-    console.log("Configurações clicked!");
+  const [isModalOpen, setIsModalOpen] = useAtom(isConfigModalOpen);
+
+  const openConfigModal = () => {
+    console.log(isModalOpen);
+    setIsModalOpen(true);
   };
 
   const handleActivitiesClick = () => {
@@ -29,7 +34,7 @@ export const Header = (): ReactElement => {
           <MdAutoGraph />
           <span>Atividades</span>
         </button>
-        <button onClick={handleConfigClick}>
+        <button onClick={openConfigModal}>
           <FaCog />
           <span>Configurações</span>
         </button>
