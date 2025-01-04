@@ -14,4 +14,3 @@ export const sprintConfigData = atomWithStorage("sprintForm", {
   restTime: { minutes: 15, seconds: 0 },
   sprintGoal: 4,
 });
-

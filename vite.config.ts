@@ -14,11 +14,6 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
-      pwaAssets: {
-        disabled: false,
-        config: true,
-      },
-
       manifest: {
         name: "Pomotico",
         short_name: "Pomotico",
@@ -46,8 +41,6 @@ export default defineConfig({
       devOptions: {
         enabled: true,
         navigateFallback: "index.html",
-        suppressWarnings: false,
-        type: "module",
       },
     }),
   ],
