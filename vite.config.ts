@@ -16,6 +16,7 @@ export default defineConfig({
       injectRegister: "auto",
       manifest: {
         name: "Pomotico",
+        display: "standalone",
         short_name: "Pomotico",
         description: "Pomodoro for people with adhd",
         theme_color: "#ffffff",
