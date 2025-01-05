@@ -1,10 +1,12 @@
-import { SoundNotificationManagerIt } from "../../types.ts";
+import { SoundNotificationManagerIt, soundNotify } from "../../types.ts";
 
 export const SoundNotificationManager = (): SoundNotificationManagerIt => {
   const waveSongs = {
     startFocus: "/src/assets/songs/startfocus.wav",
+    wakeUpFocusAlert: "/src/assets/songs/wakeupfocustalert.wav",
     endFocus: "/src/assets/songs/endfocus.wav",
     startRest: "/src/assets/songs/startRest.wav",
+    wakeUpRestAlert: "/src/assets/songs/wakeuprestalert.wav",
     endRest: "/src/assets/songs/endrest.wav",
   };
 
@@ -35,12 +37,20 @@ export const SoundNotificationManager = (): SoundNotificationManagerIt => {
       await play(waveSongs.startFocus);
     };
 
+    const wakeUpFocus = async (): Promise<void> => {
+      await playMultipleTimes(waveSongs.wakeUpRestAlert, 3);
+    };
+
     const endFocus = async (): Promise<void> => {
       await playMultipleTimes(waveSongs.endFocus, 3);
     };
 
     const startRest = async (): Promise<void> => {
       await play(waveSongs.startRest);
+    };
+
+    const wakeUpRest = async (): Promise<void> => {
+      await playMultipleTimes(waveSongs.wakeUpRestAlert, 3);
     };
 
     const endRest = async (): Promise<void> => {
@@ -52,10 +62,13 @@ export const SoundNotificationManager = (): SoundNotificationManagerIt => {
       endFocus,
       startRest,
       endRest,
+      wakeUpFocus,
+      wakeUpRest,
     };
   };
 
-  const notify = getNotify();
+  const notify = getNotify() as soundNotify;
+
   return {
     notify,
   };

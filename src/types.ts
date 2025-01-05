@@ -14,20 +14,24 @@ export type TimerStatus = {
   mode: TimerFocusMode;
   isRunning: boolean;
   remainingTime: number;
+  startTime?: number;
+  endTime?: number;
 };
 
 export interface ServiceWorkerContextProps {
   sw: ServiceWorkerRegistration | null;
   setSw: React.Dispatch<React.SetStateAction<ServiceWorkerRegistration | null>>;
 }
-
+export type soundNotify = {
+  startFocus: () => void;
+  endFocus: () => void;
+  startRest: () => void;
+  endRest: () => void;
+  wakeUpFocus: () => void;
+  wakeUpRest: () => void;
+};
 export interface SoundNotificationManagerIt {
-  notify: {
-    startFocus: () => void;
-    endFocus: () => void;
-    startRest: () => void;
-    endRest: () => void;
-  };
+  notify: soundNotify;
 }
 
 export interface NotificationManagerIt {

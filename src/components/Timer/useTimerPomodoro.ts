@@ -1,25 +1,38 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { sprintConfigData, timerData } from "../../atoms/Timer.tsx";
+import {
+  pausedTime,
+  sprintConfigData,
+  sprintHistory,
+  timerData,
+} from "../../atoms/Timer.tsx";
 import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
 import { TimerFocusMode, TimerPomodoroIt, TimerStatus } from "../../types.ts";
-import { toMilliseconds } from "../../utils/timeUtils.ts";
+import {
+  differenceInMinutes,
+  minutesToMilliseconds,
+  toMilliseconds,
+} from "../../utils/timeUtils.ts";
 import { NotificationManager } from "../Notification/notificationManager.ts";
 import { SoundNotificationManager } from "../Notification/soundNotificationManager.ts";
 
 export const useTimerPomodoro = (): TimerPomodoroIt => {
   const [configData] = useAtom(sprintConfigData);
+  const [historyTimers, setHistoryTimers] = useAtom(sprintHistory);
   const [timer, setTimer] = useAtom(timerData);
+  const [pausedAt, setPausedAt] = useAtom(pausedTime);
+
   const [startButtonText, setstartButtonText] = useState("Iniciar Sprint");
   const { sw } = useServiceWorker();
   const { notify: soundManagerNotify } = SoundNotificationManager();
+  const wakeUpTimeLimit = 5;
 
   const checkAlreadyStarted = (): boolean => {
     let originalRemainingtime = toMilliseconds(
       configData.restTime.minutes,
       configData.restTime.seconds,
     );
-    if (timer.mode === TimerFocusMode.Focusing) {
+    if (timer.mode === TimerFocusMode.Focusing && timer.startTime) {
       originalRemainingtime = toMilliseconds(
         configData.sprintTime.minutes,
         configData.sprintTime.seconds,
@@ -42,48 +55,6 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
     }
 
     return alreadyStarted ? "Retomar Descanso" : "Iniciar Descanso";
-  };
-
-  useEffect(() => {
-    const alreadyStarted = checkAlreadyStarted();
-    const buttonText = getStartButtonText(
-      timer.isRunning,
-      timer.mode,
-      alreadyStarted,
-    );
-    setstartButtonText(buttonText);
-  }, [checkAlreadyStarted, timer]);
-
-  const makeNewFocusModeObject = (): TimerStatus => {
-    const remainingTime = toMilliseconds(
-      configData.sprintTime.minutes,
-      configData.sprintTime.seconds,
-    );
-    return {
-      remainingTime,
-      isRunning: false,
-      mode: TimerFocusMode.Focusing,
-    };
-  };
-
-  const makeNewRestModeObject = (): TimerStatus => {
-    const remainingTime = toMilliseconds(
-      configData.restTime.minutes,
-      configData.restTime.seconds,
-    );
-    return {
-      remainingTime,
-      isRunning: false,
-      mode: TimerFocusMode.Resting,
-    };
-  };
-
-  const handleTimerCompletion = (): TimerStatus => {
-    sendFinishedAlert();
-    if (timer.mode === TimerFocusMode.Focusing) {
-      return makeNewRestModeObject();
-    }
-    return makeNewFocusModeObject();
   };
 
   const sendFinishedAlert = (): void => {
@@ -113,6 +84,51 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
     }
   };
 
+  const makeNewFocusModeObject = (): TimerStatus => {
+    const remainingTime = toMilliseconds(
+      configData.sprintTime.minutes,
+      configData.sprintTime.seconds,
+    );
+    return {
+      remainingTime,
+      isRunning: false,
+      mode: TimerFocusMode.Focusing,
+    };
+  };
+
+  const makeNewRestModeObject = (): TimerStatus => {
+    const remainingTime = toMilliseconds(
+      configData.restTime.minutes,
+      configData.restTime.seconds,
+    );
+    return {
+      remainingTime,
+      isRunning: false,
+      mode: TimerFocusMode.Resting,
+    };
+  };
+
+  const handleTimerCompletion = (): TimerStatus => {
+    sendFinishedAlert();
+    const currentTimer = { ...timer, endTime: Date.now() };
+    setHistoryTimers([...historyTimers, currentTimer]);
+
+    if (timer.mode === TimerFocusMode.Focusing) {
+      return makeNewRestModeObject();
+    }
+    return makeNewFocusModeObject();
+  };
+
+  useEffect(() => {
+    const alreadyStarted = checkAlreadyStarted();
+    const buttonText = getStartButtonText(
+      timer.isRunning,
+      timer.mode,
+      alreadyStarted,
+    );
+    setstartButtonText(buttonText);
+  }, [checkAlreadyStarted, timer]);
+
   useEffect(() => {
     const updateTimerEverySecond = (): void => {
       setTimer((timerStatus: TimerStatus): TimerStatus => {
@@ -125,13 +141,63 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
         };
       });
     };
-
     if (!timer.isRunning) return;
-
     const interval = setInterval(updateTimerEverySecond, 1000);
-
     return (): void => clearInterval(interval);
-  }, [timer.isRunning, configData]);
+  }, [configData, timer, setTimer, handleTimerCompletion]);
+
+  const sendWakeUpAlert = (): void => {
+    if (sw) {
+      const {
+        requestPermission: requestTextPermission,
+        isPermissionGranted: canSendTextNotification,
+        sendNotification,
+      } = NotificationManager(sw);
+
+      const title = "Volte aqui!!!";
+      const body = "Detectamos sua inatividade, volte ao foco";
+
+      if (timer.mode === TimerFocusMode.Resting) {
+        soundManagerNotify.wakeUpFocus();
+      } else {
+        soundManagerNotify.wakeUpRest();
+      }
+
+      if (!canSendTextNotification()) {
+        requestTextPermission();
+      } else {
+        sendNotification(title, body);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!timer.isRunning) {
+        const now = new Date().getTime();
+        if (timer.startTime && !timer.endTime && pausedAt) {
+          const diff = differenceInMinutes(now, pausedAt);
+          if (diff > wakeUpTimeLimit) {
+            sendWakeUpAlert();
+          }
+        } else if (timer.startTime && timer.endTime) {
+          const diff = differenceInMinutes(now, timer.endTime);
+          if (diff > wakeUpTimeLimit) {
+            sendWakeUpAlert();
+          }
+        } else if (historyTimers.length > 0) {
+          const lastTimerFinished = historyTimers[historyTimers.length - 1];
+          if (lastTimerFinished.endTime) {
+            const diff = differenceInMinutes(now, lastTimerFinished.endTime);
+            if (diff > wakeUpTimeLimit) {
+              sendWakeUpAlert();
+            }
+          }
+        }
+      }
+    }, minutesToMilliseconds(3));
+    return () => clearInterval(interval);
+  }, [pausedAt, sendWakeUpAlert, timer]);
 
   const start = (): void => {
     const alreadyStarted = checkAlreadyStarted();
@@ -142,11 +208,14 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
       } else {
         soundManagerNotify.startRest();
       }
+      setTimer({ ...timer, isRunning: true, startTime: Date.now() });
+    } else {
+      setTimer({ ...timer, isRunning: true });
     }
-    setTimer({ ...timer, isRunning: true });
   };
 
   const pause = (): void => {
+    setPausedAt(Date.now());
     setTimer({ ...timer, isRunning: false });
   };
 

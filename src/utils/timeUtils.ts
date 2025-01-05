@@ -14,3 +14,9 @@ export const formatTime = (remainingTime: number): string => {
   const seconds = ((remainingTime % 60000) / 1000).toFixed(0).padStart(2, "0");
   return `${minutes}:${seconds}`;
 };
+
+export const differenceInMinutes = (date1: number, date2: number): number => {
+  const differenceInMilliseconds = date1 - date2;
+
+  return differenceInMilliseconds / (1000 * 60);
+};

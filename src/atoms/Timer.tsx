@@ -15,3 +15,13 @@ export const sprintConfigData = atomWithStorage("sprintForm", {
   restTime: { minutes: 15, seconds: 0 },
   sprintGoal: 4,
 });
+
+export const sprintHistory = atomWithStorage(
+  "sprintHistory",
+  [] as TimerStatus[],
+);
+
+export const pausedTime = atomWithStorage(
+  "pausedTime",
+  undefined as number | undefined,
+);
