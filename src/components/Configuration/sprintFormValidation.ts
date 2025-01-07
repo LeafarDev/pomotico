@@ -35,13 +35,6 @@ export const sprintFormSchema = z.object({
     .refine((value) => !isNaN(value) && value >= 1, {
       message: "Informe uma quantia.",
     }),
+  allowSoundNotifications: z.boolean(),
+  allowTextNotifications: z.boolean(),
 });
-
-export type SprintFormValues = {
-  sprintTime: {
-    minutes: string;
-    seconds: string;
-  };
-  restTime: { minutes: string; seconds: string };
-  sprintGoal: string;
-};

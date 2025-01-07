@@ -218,7 +218,7 @@ export const GlobalStyle = createGlobalStyle`
     }
     
     :root {
-        color-scheme: light dark;
+        color-scheme: dark;
     }
     :root {
         --swal2-outline-color: rgba(100, 150, 200, 0.5);

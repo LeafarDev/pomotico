@@ -1,60 +1,73 @@
-import { SoundNotificationManagerIt, soundNotify } from "../../types.ts";
+import { useAtom } from "jotai";
 
-export const SoundNotificationManager = (): SoundNotificationManagerIt => {
-  const waveSongs = {
-    startFocus: "/src/assets/songs/startfocus.wav",
-    wakeUpFocusAlert: "/src/assets/songs/wakeupfocustalert.wav",
-    endFocus: "/src/assets/songs/endfocus.wav",
-    startRest: "/src/assets/songs/startRest.wav",
-    wakeUpRestAlert: "/src/assets/songs/wakeuprestalert.wav",
-    endRest: "/src/assets/songs/endrest.wav",
-  };
+import activateNotificationWav from "../../assets/songs/activatenotification.wav";
+import endFocusWav from "../../assets/songs/endfocus.wav";
+import endRestWav from "../../assets/songs/endrest.wav";
+import startFocusWav from "../../assets/songs/startfocus.wav";
+import startRestWav from "../../assets/songs/startrest.wav";
+import wakeUpFocusAlertWav from "../../assets/songs/wakeupfocustalert.wav";
+import wakeUpRestAlertWav from "../../assets/songs/wakeuprestalert.wav";
+import { sprintConfigData } from "../../atoms/Timer.tsx";
+import { SoundNotificationManagerIt, soundNotifyType } from "../../types.ts";
+
+export const SoundNotificationManager = (
+  allowNotificationForce: boolean = false,
+): SoundNotificationManagerIt => {
+  const [{ allowSoundNotifications }] = useAtom(sprintConfigData);
 
   const play = async (path: string): Promise<void> => {
-    await new Audio(path).play();
+    if (allowNotificationForce || allowSoundNotifications) {
+      await new Audio(path).play();
+    }
   };
 
   const playMultipleTimes = async (audioPath: string, repeatCount: number) => {
-    const audio = new Audio(audioPath);
-    let playCount = 0;
+    if (allowNotificationForce || allowSoundNotifications) {
+      const audio = new Audio(audioPath);
+      let playCount = 0;
 
-    const playNext = async () => {
-      playCount++;
-      if (playCount < repeatCount) {
-        audio.currentTime = 0;
-        await audio.play();
-      } else {
-        audio.removeEventListener("ended", playNext);
-      }
-    };
+      const playNext = async () => {
+        playCount++;
+        if (playCount < repeatCount) {
+          audio.currentTime = 0;
+          await audio.play();
+        } else {
+          audio.removeEventListener("ended", playNext);
+        }
+      };
 
-    audio.addEventListener("ended", playNext);
-    await audio.play();
+      audio.addEventListener("ended", playNext);
+      await audio.play();
+    }
+  };
+
+  const activateNotification = async (): Promise<void> => {
+    await play(activateNotificationWav);
   };
 
   const getNotify = () => {
     const startFocus = async (): Promise<void> => {
-      await play(waveSongs.startFocus);
+      await play(startFocusWav);
     };
 
     const wakeUpFocus = async (): Promise<void> => {
-      await playMultipleTimes(waveSongs.wakeUpRestAlert, 3);
+      await playMultipleTimes(wakeUpFocusAlertWav, 3);
     };
 
     const endFocus = async (): Promise<void> => {
-      await playMultipleTimes(waveSongs.endFocus, 3);
+      await playMultipleTimes(endFocusWav, 3);
     };
 
     const startRest = async (): Promise<void> => {
-      await play(waveSongs.startRest);
+      await play(startRestWav);
     };
 
     const wakeUpRest = async (): Promise<void> => {
-      await playMultipleTimes(waveSongs.wakeUpRestAlert, 3);
+      await playMultipleTimes(wakeUpRestAlertWav, 3);
     };
 
     const endRest = async (): Promise<void> => {
-      await playMultipleTimes(waveSongs.endRest, 3);
+      await playMultipleTimes(endRestWav, 3);
     };
 
     return {
@@ -64,10 +77,11 @@ export const SoundNotificationManager = (): SoundNotificationManagerIt => {
       endRest,
       wakeUpFocus,
       wakeUpRest,
+      activateNotification,
     };
   };
 
-  const notify = getNotify() as soundNotify;
+  const notify = getNotify() as soundNotifyType;
 
   return {
     notify,

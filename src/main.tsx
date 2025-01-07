@@ -15,7 +15,6 @@ Modal.setAppElement("#root");
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ServiceWorkerProvider>
-      <SprintForm />
       <PWABadge />
       <GlobalStyle />
       <BrowserRouter>
@@ -24,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />} />
         </Routes>
       </BrowserRouter>
+      <SprintForm />
     </ServiceWorkerProvider>
   </React.StrictMode>,
 );

@@ -7,14 +7,18 @@ import {
   timerData,
 } from "../../atoms/Timer.tsx";
 import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
-import { TimerFocusMode, TimerPomodoroIt, TimerStatus } from "../../types.ts";
+import {
+  TimerFocusMode,
+  TimerPomodoroIt,
+  TimerStatusType,
+} from "../../types.ts";
 import {
   differenceInMinutes,
   minutesToMilliseconds,
   toMilliseconds,
 } from "../../utils/timeUtils.ts";
-import { NotificationManager } from "../Notification/notificationManager.ts";
 import { SoundNotificationManager } from "../Notification/soundNotificationManager.ts";
+import { TextNotificationManager } from "../Notification/textNotificationManager.ts";
 
 export const useTimerPomodoro = (): TimerPomodoroIt => {
   const [configData] = useAtom(sprintConfigData);
@@ -24,21 +28,31 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
 
   const [startButtonText, setstartButtonText] = useState("Iniciar Sprint");
   const { sw } = useServiceWorker();
+  const {
+    requestPermission: requestTextPermission,
+    isPermissionGranted: canSendTextNotification,
+    sendNotification,
+  } = TextNotificationManager(sw);
   const { notify: soundManagerNotify } = SoundNotificationManager();
-  const wakeUpTimeLimit = 5;
+  const wakeUpTimeLimit = 2;
 
   const checkAlreadyStarted = (): boolean => {
-    let originalRemainingtime = toMilliseconds(
-      configData.restTime.minutes,
-      configData.restTime.seconds,
-    );
     if (timer.mode === TimerFocusMode.Focusing && timer.startTime) {
-      originalRemainingtime = toMilliseconds(
+      const originalRemainingtime = toMilliseconds(
         configData.sprintTime.minutes,
         configData.sprintTime.seconds,
       );
+      return timer.remainingTime < originalRemainingtime;
     }
-    return timer.remainingTime < originalRemainingtime;
+    if (timer.mode === TimerFocusMode.Resting && timer.startTime) {
+      const originalRemainingtime = toMilliseconds(
+        configData.restTime.minutes,
+        configData.restTime.seconds,
+      );
+
+      return timer.remainingTime < originalRemainingtime;
+    }
+    return false;
   };
 
   const getStartButtonText = (
@@ -59,12 +73,6 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
 
   const sendFinishedAlert = (): void => {
     if (sw) {
-      const {
-        requestPermission: requestTextPermission,
-        isPermissionGranted: canSendTextNotification,
-        sendNotification,
-      } = NotificationManager(sw);
-
       let title = "Sprint finalizada!";
       let body = "Hora de descansar! Acione o modo descanso :)";
 
@@ -84,7 +92,7 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
     }
   };
 
-  const makeNewFocusModeObject = (): TimerStatus => {
+  const makeNewFocusModeObject = (): TimerStatusType => {
     const remainingTime = toMilliseconds(
       configData.sprintTime.minutes,
       configData.sprintTime.seconds,
@@ -96,7 +104,7 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
     };
   };
 
-  const makeNewRestModeObject = (): TimerStatus => {
+  const makeNewRestModeObject = (): TimerStatusType => {
     const remainingTime = toMilliseconds(
       configData.restTime.minutes,
       configData.restTime.seconds,
@@ -108,7 +116,7 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
     };
   };
 
-  const handleTimerCompletion = (): TimerStatus => {
+  const handleTimerCompletion = (): TimerStatusType => {
     sendFinishedAlert();
     const currentTimer = { ...timer, endTime: Date.now() };
     setHistoryTimers([...historyTimers, currentTimer]);
@@ -131,7 +139,7 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
 
   useEffect(() => {
     const updateTimerEverySecond = (): void => {
-      setTimer((timerStatus: TimerStatus): TimerStatus => {
+      setTimer((timerStatus: TimerStatusType): TimerStatusType => {
         if (timerStatus.remainingTime <= 1000) {
           return handleTimerCompletion();
         }
@@ -148,12 +156,6 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
 
   const sendWakeUpAlert = (): void => {
     if (sw) {
-      const {
-        requestPermission: requestTextPermission,
-        isPermissionGranted: canSendTextNotification,
-        sendNotification,
-      } = NotificationManager(sw);
-
       const title = "Volte aqui!!!";
       const body = "Detectamos sua inatividade, volte ao foco";
 
@@ -211,6 +213,12 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
       setTimer({ ...timer, isRunning: true, startTime: Date.now() });
     } else {
       setTimer({ ...timer, isRunning: true });
+    }
+
+    if (sw) {
+      if (!checkAlreadyStarted()) {
+        requestTextPermission();
+      }
     }
   };
 

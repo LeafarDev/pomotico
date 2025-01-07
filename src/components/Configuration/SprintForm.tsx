@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import Modal from "react-modal";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import {
+  AuthorizeNotificationLabel,
   ButtonConfigModal,
   FormWrapper,
   InputGroup,
@@ -10,12 +11,16 @@ import { useSprintFormLogic } from "./useSprintForm.ts";
 
 const SprintForm = (): ReactElement => {
   const {
+    register,
     registerWithMask,
+    handleTextNotificationChange,
+    handleSoundNotificationChange,
     handleSubmit,
     errors,
     closeModal,
     onSubmit,
     isModalOpen,
+    textNotificationsAllowed,
   } = useSprintFormLogic();
 
   return (
@@ -93,7 +98,27 @@ const SprintForm = (): ReactElement => {
               className={errors.sprintGoal ? "error" : ""}
             />
           </InputGroup>
-
+          <InputGroup>
+            <AuthorizeNotificationLabel>
+              <input
+                type="checkbox"
+                {...register("allowTextNotifications")}
+                checked={textNotificationsAllowed}
+                onChange={handleTextNotificationChange}
+              />
+              Autorizar notificações
+            </AuthorizeNotificationLabel>
+          </InputGroup>
+          <InputGroup>
+            <AuthorizeNotificationLabel>
+              <input
+                type="checkbox"
+                {...register("allowSoundNotifications")}
+                onChange={handleSoundNotificationChange}
+              />
+              Autorizar avisos sonoros
+            </AuthorizeNotificationLabel>
+          </InputGroup>
           <div
             style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}
           >

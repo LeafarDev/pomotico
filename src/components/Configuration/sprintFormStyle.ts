@@ -61,3 +61,9 @@ export const ButtonConfigModal = styled.button`
     box-shadow: 0 0 5px rgba(0, 188, 212, 0.6);
   }
 `;
+
+export const AuthorizeNotificationLabel = styled.p`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+`;

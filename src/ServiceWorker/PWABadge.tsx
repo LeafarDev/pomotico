@@ -1,6 +1,6 @@
 import "./PWABadge.css";
-// eslint-disable-next-line import/no-unresolved
 import { ReactElement } from "react";
+// eslint-disable-next-line import/no-unresolved
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 function PWABadge(): ReactElement {
@@ -12,24 +12,18 @@ function PWABadge(): ReactElement {
     updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(swUrl, r) {
-      console.log("teste3");
       if (period <= 0) return;
       if (r?.active?.state === "activated") {
         registerPeriodicSync(period, swUrl, r);
-        console.log("teste2", r);
       } else if (r?.installing) {
         r.installing.addEventListener("statechange", (e) => {
-          console.log("statechange", e);
           const sw = e.target as ServiceWorker;
           if (sw.state === "activated") registerPeriodicSync(period, swUrl, r);
         });
-        console.log("teste1");
-      } else {
-        console.log("teste");
       }
     },
     onRegisterError(err: Error) {
-      console.log("teste error", err);
+      console.error(err);
     },
   });
 
@@ -37,8 +31,6 @@ function PWABadge(): ReactElement {
     setOfflineReady(false);
     setNeedRefresh(false);
   }
-
-  console.log(offlineReady, needRefresh);
 
   return (
     <div className="PWABadge" role="alert" aria-labelledby="toast-message">

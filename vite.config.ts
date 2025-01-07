@@ -19,7 +19,7 @@ export default defineConfig({
         display: "standalone",
         short_name: "Pomotico",
         description: "Pomodoro for people with adhd",
-        theme_color: "#ffffff",
+        theme_color: "#2d3a3f",
         icons: [
           {
             src: "/android-chrome-192x192.png",
@@ -35,7 +35,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,ico, gif, wav}"],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
       },
