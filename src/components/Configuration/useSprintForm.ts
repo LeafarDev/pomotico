@@ -10,6 +10,8 @@ import {
   sprintConfigData,
   timerData,
 } from "../../atoms/Timer.tsx";
+import { SoundNotificationManager } from "../../Notifications/soundNotificationManager.ts";
+import { TextNotificationManager } from "../../Notifications/textNotificationManager.ts";
 import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
 import {
   ConfigDataToFormType,
@@ -17,8 +19,6 @@ import {
   TimerFocusMode,
 } from "../../types.ts";
 import { toMilliseconds } from "../../utils/timeUtils.ts";
-import { SoundNotificationManager } from "../Notification/soundNotificationManager.ts";
-import { TextNotificationManager } from "../Notification/textNotificationManager.ts";
 
 const Toast = Swal.mixin({
   toast: true,

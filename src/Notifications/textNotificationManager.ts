@@ -1,7 +1,7 @@
 import { useAtom } from "jotai/index";
-import notificationIcon from "../../assets/notification/notification-icon.png";
-import { sprintConfigData } from "../../atoms/Timer.tsx";
-import { TextNotificationManagerIt } from "../../types.ts";
+import notificationIcon from "../assets/notification/notification-icon.png";
+import { sprintConfigData } from "../atoms/Timer.tsx";
+import { TextNotificationManagerIt } from "../types.ts";
 
 export const TextNotificationManager = (
   sw: ServiceWorkerRegistration | null,

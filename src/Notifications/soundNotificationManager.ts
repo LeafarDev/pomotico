@@ -1,14 +1,14 @@
 import { useAtom } from "jotai";
 
-import activateNotificationWav from "../../assets/songs/activatenotification.wav";
-import endFocusWav from "../../assets/songs/endfocus.wav";
-import endRestWav from "../../assets/songs/endrest.wav";
-import startFocusWav from "../../assets/songs/startfocus.wav";
-import startRestWav from "../../assets/songs/startrest.wav";
-import wakeUpFocusAlertWav from "../../assets/songs/wakeupfocustalert.wav";
-import wakeUpRestAlertWav from "../../assets/songs/wakeuprestalert.wav";
-import { sprintConfigData } from "../../atoms/Timer.tsx";
-import { SoundNotificationManagerIt, soundNotifyType } from "../../types.ts";
+import activateNotificationWav from "../assets/songs/activatenotification.wav";
+import endFocusWav from "../assets/songs/endfocus.wav";
+import endRestWav from "../assets/songs/endrest.wav";
+import startFocusWav from "../assets/songs/startFocus.wav";
+import startRestWav from "../assets/songs/startRest.wav";
+import wakeUpFocusAlertWav from "../assets/songs/wakeupfocustalert.wav";
+import wakeUpRestAlertWav from "../assets/songs/wakeuprestalert.wav";
+import { sprintConfigData } from "../atoms/Timer.tsx";
+import { SoundNotificationManagerIt, soundNotifyType } from "../types.ts";
 
 export const SoundNotificationManager = (
   allowNotificationForce: boolean = false,

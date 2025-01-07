@@ -8,17 +8,19 @@ import {
   TimerContent,
   TimeRemaining,
 } from "./timerStyle.ts";
-import { useTimerPomodoro } from "./useTimerPomodoro.ts";
 
 import workingGif from "../../assets/gifs/reading.gif";
 import restingGif from "../../assets/gifs/resting.gif";
 import waitingGif from "../../assets/gifs/waiting.gif";
 import { timerData } from "../../atoms/Timer.tsx";
+import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
+import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
 import { TimerFocusMode } from "../../types.ts";
 import { formatTime } from "../../utils/timeUtils.ts";
 
 export const Timer = (): ReactElement => {
-  const { start, pause, reset, startButtonText } = useTimerPomodoro();
+  const { sw } = useServiceWorker();
+  const { start, pause, reset, startButtonText } = useTimerPomodoro(sw);
   const [{ mode: focusMode, remainingTime, isRunning }] = useAtom(timerData);
 
   return (

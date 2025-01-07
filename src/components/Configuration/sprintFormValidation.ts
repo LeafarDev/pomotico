@@ -5,7 +5,7 @@ export const sprintFormSchema = z.object({
     minutes: z
       .string()
       .transform((value) => parseInt(value, 10))
-      .refine((value) => !isNaN(value) && value >= 5 && value <= 59, {
+      .refine((value) => !isNaN(value) && value >= 0 && value <= 59, {
         message: "Informe um valor entre 5 e 59.",
       }),
     seconds: z
@@ -19,7 +19,7 @@ export const sprintFormSchema = z.object({
     minutes: z
       .string()
       .transform((value) => parseInt(value, 10))
-      .refine((value) => !isNaN(value) && value >= 5 && value <= 59, {
+      .refine((value) => !isNaN(value) && value >= 0 && value <= 59, {
         message: "Informe um valor entre 5 e 59.",
       }),
     seconds: z
