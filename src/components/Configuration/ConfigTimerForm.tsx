@@ -7,9 +7,9 @@ import {
   FormWrapper,
   InputGroup,
 } from "./sprintFormStyle.ts";
-import { useSprintFormLogic } from "./useSprintForm.ts";
+import { useSprintFormLogic } from "../../hooks/useConfigTimerForm";
 
-const SprintForm = (): ReactElement => {
+const ConfigTimerForm = (): ReactElement => {
   const {
     register,
     registerWithMask,
@@ -140,4 +140,4 @@ const SprintForm = (): ReactElement => {
   );
 };
 
-export default SprintForm;
+export default ConfigTimerForm;

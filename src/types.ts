@@ -2,6 +2,7 @@ export interface TimerPomodoroIt {
   start: () => void;
   pause: () => void;
   reset: () => void;
+  skip: () => void;
   startButtonText: string;
 }
 
@@ -12,6 +13,7 @@ export enum TimerFocusMode {
 
 export type TimerStatusType = {
   mode: TimerFocusMode;
+  skipped: boolean;
   isRunning: boolean;
   remainingTime: number;
   startTime?: number;

@@ -31,6 +31,7 @@ export const useTimerPomodoro = (
     start: actions.start,
     pause: actions.pause,
     reset: actions.reset,
+    skip: actions.skip,
     startButtonText: actions.getStartButtonText(),
   };
 };

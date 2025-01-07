@@ -20,7 +20,7 @@ import { formatTime } from "../../utils/timeUtils.ts";
 
 export const Timer = (): ReactElement => {
   const { sw } = useServiceWorker();
-  const { start, pause, reset, startButtonText } = useTimerPomodoro(sw);
+  const { start, pause, reset, skip, startButtonText } = useTimerPomodoro(sw);
   const [{ mode: focusMode, remainingTime, isRunning }] = useAtom(timerData);
 
   return (
@@ -51,6 +51,7 @@ export const Timer = (): ReactElement => {
       <TimeRemaining>{formatTime(remainingTime)}</TimeRemaining>
       <ButtonsController>
         <button onClick={reset}>Resetar Tempo</button>
+        <button onClick={skip}>Pular</button>
         <button onClick={isRunning ? pause : start}>{startButtonText}</button>
       </ButtonsController>
     </TimerContent>

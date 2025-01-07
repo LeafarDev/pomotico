@@ -51,6 +51,10 @@ export const useTimerActions = (
     });
   };
 
+  const skip = (): void => {
+    setTimerState(handleTimerCompletion(true));
+  };
+
   const getStartButtonText = (): string => {
     if (timerState.isRunning) return "Pausar";
     if (timerState.mode === TimerFocusMode.Focusing) {
@@ -76,8 +80,11 @@ export const useTimerActions = (
     );
   };
 
-  const handleTimerCompletion = (): TimerStatusType => {
-    const updatedHistory = [...history, { ...timerState, endTime: Date.now() }];
+  const handleTimerCompletion = (skipped = false): TimerStatusType => {
+    const updatedHistory = [
+      ...history,
+      { ...timerState, endTime: Date.now(), skipped },
+    ];
     setHistory(updatedHistory);
 
     const remainingTime =
@@ -99,6 +106,7 @@ export const useTimerActions = (
     return {
       remainingTime,
       isRunning: false,
+      skipped: false,
       mode,
     };
   };
@@ -129,6 +137,7 @@ export const useTimerActions = (
     start,
     pause,
     reset,
+    skip,
     getStartButtonText,
     handleTimerCompletion,
   };

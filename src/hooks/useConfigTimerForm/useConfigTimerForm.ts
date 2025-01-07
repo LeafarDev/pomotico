@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useHookFormMask } from "use-mask-input";
-import { sprintFormSchema } from "./sprintFormValidation.ts";
+import { sprintFormSchema } from "./configTimerFormValidation.ts";
 import {
   isConfigModalOpen,
   sprintConfigData,

@@ -44,10 +44,18 @@ export const ButtonsController = styled.div`
     }
 
     &:nth-child(2) {
-      background-color: #02363e;
+      background-color: #6203f1;
     }
 
     &:nth-child(2):hover {
+      background-color: #4c02c1;
+    }
+
+    &:nth-child(3) {
+      background-color: #02363e;
+    }
+
+    &:nth-child(3):hover {
       background-color: #02282c;
     }
   }

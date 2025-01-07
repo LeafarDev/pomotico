@@ -6,6 +6,7 @@ export const isConfigModalOpen = atom(false);
 
 export const timerData = atomWithStorage<TimerStatusType>("timerData", {
   mode: TimerFocusMode.Focusing,
+  skipped: false,
   remainingTime: 25 * 60 * 1000,
   isRunning: false,
 } as TimerStatusType);
