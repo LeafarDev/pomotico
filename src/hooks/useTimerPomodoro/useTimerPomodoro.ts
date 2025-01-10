@@ -1,7 +1,8 @@
 import { useTimerActions } from "./timerActions.ts";
 import { useTimerNotifications } from "./timerNotifications.ts";
 import { useTimerState } from "./timerState.ts";
-import { TimerPomodoroIt } from "../../types";
+import { useTimerWorker } from "./useTimerWorker.ts";
+import { TimerPomodoroIt } from "../../types/types.ts";
 
 export const useTimerPomodoro = (
   sw: ServiceWorkerRegistration | null,
@@ -14,9 +15,13 @@ export const useTimerPomodoro = (
     pausedAt,
     setPausedAt,
     configData,
+    lastUpdated,
+    setLastUpdated,
   } = useTimerState();
 
   useTimerNotifications(sw, timerState, history, pausedAt);
+
+  const { sendTimeWorkerMessage, onTimeWorkerMessage } = useTimerWorker();
 
   const actions = useTimerActions(
     timerState,
@@ -25,6 +30,10 @@ export const useTimerPomodoro = (
     history,
     setHistory,
     configData,
+    lastUpdated,
+    setLastUpdated,
+    sendTimeWorkerMessage,
+    onTimeWorkerMessage,
   );
 
   return {

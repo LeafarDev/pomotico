@@ -15,7 +15,7 @@ import waitingGif from "../../assets/gifs/waiting.gif";
 import { timerData } from "../../atoms/Timer.tsx";
 import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
 import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
-import { TimerFocusMode } from "../../types.ts";
+import { TimerFocusMode } from "../../types/types.ts";
 import { formatTime } from "../../utils/timeUtils.ts";
 
 export const Timer = (): ReactElement => {

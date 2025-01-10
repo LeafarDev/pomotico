@@ -17,7 +17,7 @@ import {
   ConfigDataToFormType,
   ConfigDataType,
   TimerFocusMode,
-} from "../../types.ts";
+} from "../../types/types.ts";
 import { toMilliseconds } from "../../utils/timeUtils.ts";
 
 const Toast = Swal.mixin({

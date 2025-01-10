@@ -1,7 +1,10 @@
-import { useAtom } from "jotai/index";
 import { useEffect } from "react";
-import { lastUpdatedTime } from "../../atoms/Timer.tsx";
-import { ConfigDataType, TimerFocusMode, TimerStatusType } from "../../types";
+import {
+  ConfigDataType,
+  TimerEventDetail,
+  TimerFocusMode,
+  TimerStatusType,
+} from "../../types/types.ts";
 import { formatTime, toMilliseconds } from "../../utils/timeUtils";
 
 export const useTimerActions = (
@@ -15,25 +18,97 @@ export const useTimerActions = (
   history: TimerStatusType[],
   setHistory: (history: TimerStatusType[]) => void,
   configData: ConfigDataType,
+  lastUpdated: number,
+  setLastUpdated: (lastUpdated: number) => void,
+  sendTimeWorkerMessage: (message: unknown) => void,
+  onTimeWorkerMessage,
 ) => {
-  const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedTime);
+  onTimeWorkerMessage((e: TimerEventDetail) => {
+    const { action, value, lastUpdated } = e;
+    console.log(lastUpdated);
+    const timerState = value as TimerStatusType;
+    if (lastUpdated) {
+      setLastUpdated(lastUpdated);
+    }
 
+    if (action === "updateTimer") {
+      if (!value) {
+        console.log("updateTimer", e);
+      }
+
+      if (value) {
+        setTimerState(timerState);
+      }
+    }
+  });
+  const startWorker = (timerState: TimerStatusType) => {
+    const now = Date.now();
+
+    setLastUpdated(now);
+    sendTimeWorkerMessage({
+      action: "start",
+      type: "background",
+      value: timerState,
+      lastUpdated: now,
+    });
+  };
+
+  const pauseWorker = (timerState: TimerStatusType) => {
+    const now = Date.now();
+    setLastUpdated(now);
+    sendTimeWorkerMessage({
+      action: "pause",
+      type: "background",
+      value: timerState,
+      lastUpdated: now,
+    });
+  };
+  const resetWorker = (timerState: TimerStatusType) => {
+    const now = Date.now();
+    setLastUpdated(now);
+    sendTimeWorkerMessage({
+      action: "reset",
+      type: "background",
+      value: timerState,
+      lastUpdated: now,
+    });
+  };
+
+  const skipWorker = (timerState: TimerStatusType) => {
+    const now = Date.now();
+    setLastUpdated(now);
+    sendTimeWorkerMessage({
+      action: "skip",
+      type: "background",
+      value: timerState,
+      lastUpdated: now,
+    });
+  };
   const start = (): void => {
     setLastUpdated(Date.now());
+    console.log(lastUpdated);
     const alreadyStarted = checkAlreadyStarted();
     if (!alreadyStarted) {
-      setTimerState({
+      const newTimerState = {
         ...timerState,
         isRunning: true,
         startTime: Date.now(),
-      });
+      };
+
+      setTimerState(newTimerState);
+
+      startWorker(newTimerState);
     } else {
-      setTimerState({ ...timerState, isRunning: true });
+      const newTimerState = { ...timerState, isRunning: true };
+      setTimerState(newTimerState);
+      startWorker(newTimerState);
     }
   };
 
   const pause = (): void => {
     setPausedAt(Date.now());
+    const pausedTimer = { ...timerState, isRunning: false };
+    pauseWorker(pausedTimer);
     setTimerState({ ...timerState, isRunning: false });
   };
 
@@ -49,15 +124,21 @@ export const useTimerActions = (
             configData.restTime.seconds,
           );
 
-    setTimerState({
+    const resetedTimerState = {
       ...timerState,
       isRunning: false,
       remainingTime,
-    });
+    };
+
+    setTimerState(resetedTimerState);
+
+    resetWorker(resetedTimerState);
   };
 
   const skip = (): void => {
-    setTimerState(handleTimerCompletion(true));
+    const skipedTimer = handleTimerCompletion(true);
+    skipWorker(skipedTimer);
+    setTimerState(skipedTimer);
   };
 
   const getStartButtonText = (): string => {
@@ -121,34 +202,44 @@ export const useTimerActions = (
   };
 
   useEffect(() => {
-    const updateTimer = (): void => {
-      setTimerState((prevState) => {
-        const now = Date.now();
-        const elapsedTime = now - lastUpdated;
+    updateTab(timerState.remainingTime);
+  }, [timerState.remainingTime]);
 
-        if (prevState.remainingTime <= elapsedTime) {
-          return handleTimerCompletion();
-        }
-
-        setLastUpdated(now);
-
-        const remainingTime = prevState.remainingTime - elapsedTime;
-        updateTab(remainingTime);
-        return {
-          ...prevState,
-          remainingTime,
-        };
-      });
-    };
-
-    if (!timerState.isRunning) return;
-
-    const interval = setInterval(updateTimer, 1000);
-
-    return (): void => {
-      clearInterval(interval);
-    };
-  }, [timerState.isRunning, setTimerState, handleTimerCompletion]);
+  useEffect(() => {
+    console.log("is this real?", timerState);
+    if (timerState.isRunning) {
+      startWorker(timerState);
+    }
+  }, []);
+  // useEffect(() => {
+  //   const updateTimer = (): void => {
+  //     setTimerState((prevState) => {
+  //       const now = Date.now();
+  //       const elapsedTime = now - lastUpdated;
+  //
+  //       if (prevState.remainingTime <= elapsedTime) {
+  //         return handleTimerCompletion();
+  //       }
+  //
+  //       setLastUpdated(now);
+  //
+  //       const remainingTime = prevState.remainingTime - elapsedTime;
+  //       updateTab(remainingTime);
+  //       return {
+  //         ...prevState,
+  //         remainingTime,
+  //       };
+  //     });
+  //   };
+  //
+  //   if (!timerState.isRunning) return;
+  //
+  //   const interval = setInterval(updateTimer, 1000);
+  //
+  //   return (): void => {
+  //     clearInterval(interval);
+  //   };
+  // }, [timerState.isRunning, setTimerState, handleTimerCompletion]);
 
   return {
     start,

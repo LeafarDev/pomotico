@@ -8,7 +8,7 @@ import startRestWav from "../assets/songs/startRest.wav";
 import wakeUpFocusAlertWav from "../assets/songs/wakeupfocustalert.wav";
 import wakeUpRestAlertWav from "../assets/songs/wakeuprestalert.wav";
 import { sprintConfigData } from "../atoms/Timer.tsx";
-import { SoundNotificationManagerIt, soundNotifyType } from "../types.ts";
+import { SoundNotificationManagerIt, soundNotifyType } from "../types/types.ts";
 
 export const SoundNotificationManager = (
   allowNotificationForce: boolean = false,

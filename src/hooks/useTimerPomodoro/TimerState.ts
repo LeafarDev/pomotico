@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 import {
+  lastUpdatedTime,
   pausedTime,
   sprintConfigData,
   sprintHistory,
@@ -11,7 +12,7 @@ export const useTimerState = () => {
   const [history, setHistory] = useAtom(sprintHistory);
   const [pausedAt, setPausedAt] = useAtom(pausedTime);
   const [configData] = useAtom(sprintConfigData);
-
+  const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedTime);
   return {
     timerState,
     setTimerState,
@@ -20,5 +21,7 @@ export const useTimerState = () => {
     pausedAt,
     setPausedAt,
     configData,
+    lastUpdated,
+    setLastUpdated,
   };
 };

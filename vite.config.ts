@@ -9,6 +9,9 @@ export default defineConfig({
       usePolling: true,
     },
   },
+  worker: {
+    format: "es",
+  },
   plugins: [
     react(),
     VitePWA({

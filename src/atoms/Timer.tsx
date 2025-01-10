@@ -1,15 +1,28 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { ConfigDataType, TimerFocusMode, TimerStatusType } from "../types.ts";
+import {
+  ConfigDataType,
+  TimerFocusMode,
+  TimerStatusType,
+} from "../types/types.ts";
 
 export const isConfigModalOpen = atom(false);
 
-export const timerData = atomWithStorage<TimerStatusType>("timerData", {
-  mode: TimerFocusMode.Focusing,
-  skipped: false,
-  remainingTime: 25 * 60 * 1000,
-  isRunning: false,
-} as TimerStatusType);
+export const timerData = atomWithStorage(
+  "timerData",
+  {
+    mode: TimerFocusMode.Focusing,
+    skipped: false,
+    remainingTime: 25 * 60 * 1000,
+    isRunning: false,
+  } as TimerStatusType,
+  undefined,
+  {
+    getOnInit: true,
+
+  },
+);
+
 export const lastUpdatedTime = atomWithStorage("lastUpdatedTime", -1);
 
 export const sprintConfigData = atomWithStorage<ConfigDataType>("sprintForm", {

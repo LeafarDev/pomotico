@@ -5,7 +5,7 @@ import {
   ReactNode,
   useState,
 } from "react";
-import { ServiceWorkerContextProps } from "../types.ts";
+import { ServiceWorkerContextProps } from "../types/types.ts";
 
 const ServiceWorkerContext = createContext<
   ServiceWorkerContextProps | undefined

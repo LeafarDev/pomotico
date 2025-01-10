@@ -69,3 +69,17 @@ export type ConfigDataToFormType = {
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
 };
+
+export interface TimerEventDetail {
+  action: "start" | "pause" | "reset" | "skip" | "finished" | "updateTimer";
+  type: "background" | "ui";
+  value?: unknown;
+  lastUpdated?: number;
+  sessionId?: number;
+}
+
+declare global {
+  interface WindowEventMap {
+    timerEvent: CustomEvent<TimerEventDetail>;
+  }
+}
