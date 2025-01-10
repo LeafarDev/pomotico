@@ -10,6 +10,7 @@ export const timerData = atomWithStorage<TimerStatusType>("timerData", {
   remainingTime: 25 * 60 * 1000,
   isRunning: false,
 } as TimerStatusType);
+export const lastUpdatedTime = atomWithStorage("lastUpdatedTime", -1);
 
 export const sprintConfigData = atomWithStorage<ConfigDataType>("sprintForm", {
   sprintTime: { minutes: 25, seconds: 0 },

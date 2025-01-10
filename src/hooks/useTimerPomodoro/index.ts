@@ -1,4 +1,4 @@
 export { useTimerPomodoro } from "./useTimerPomodoro";
-export { useTimerState } from "./TimerState";
-export { useTimerActions } from "./TimerActions";
-export { useTimerNotifications } from "./TimerNotifications";
+export { useTimerState } from "./timerState.ts";
+export { useTimerActions } from "./timerActions.ts";
+export { useTimerNotifications } from "./timerNotifications.ts";

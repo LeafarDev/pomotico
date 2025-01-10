@@ -1,6 +1,8 @@
+import { useAtom } from "jotai/index";
 import { useEffect } from "react";
+import { lastUpdatedTime } from "../../atoms/Timer.tsx";
 import { ConfigDataType, TimerFocusMode, TimerStatusType } from "../../types";
-import { toMilliseconds } from "../../utils/timeUtils";
+import { formatTime, toMilliseconds } from "../../utils/timeUtils";
 
 export const useTimerActions = (
   timerState: TimerStatusType,
@@ -14,7 +16,10 @@ export const useTimerActions = (
   setHistory: (history: TimerStatusType[]) => void,
   configData: ConfigDataType,
 ) => {
+  const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedTime);
+
   const start = (): void => {
+    setLastUpdated(Date.now());
     const alreadyStarted = checkAlreadyStarted();
     if (!alreadyStarted) {
       setTimerState({
@@ -111,22 +116,34 @@ export const useTimerActions = (
     };
   };
 
+  const updateTab = (remainingTime: number): void => {
+    document.title = "Pomotico - " + formatTime(remainingTime);
+  };
+
   useEffect(() => {
-    const updateTimerEverySecond = (): void => {
-      setTimerState((timerStatus) => {
-        if (timerStatus.remainingTime <= 1000) {
+    const updateTimer = (): void => {
+      setTimerState((prevState) => {
+        const now = Date.now();
+        const elapsedTime = now - lastUpdated;
+
+        if (prevState.remainingTime <= elapsedTime) {
           return handleTimerCompletion();
         }
+
+        setLastUpdated(now);
+
+        const remainingTime = prevState.remainingTime - elapsedTime;
+        updateTab(remainingTime);
         return {
-          ...timerStatus,
-          remainingTime: timerStatus.remainingTime - 1000,
+          ...prevState,
+          remainingTime,
         };
       });
     };
 
     if (!timerState.isRunning) return;
 
-    const interval = setInterval(updateTimerEverySecond, 1000);
+    const interval = setInterval(updateTimer, 1000);
 
     return (): void => {
       clearInterval(interval);

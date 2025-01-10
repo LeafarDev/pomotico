@@ -1,6 +1,6 @@
-import { useTimerActions } from "./TimerActions";
-import { useTimerNotifications } from "./TimerNotifications";
-import { useTimerState } from "./TimerState";
+import { useTimerActions } from "./timerActions.ts";
+import { useTimerNotifications } from "./timerNotifications.ts";
+import { useTimerState } from "./timerState.ts";
 import { TimerPomodoroIt } from "../../types";
 
 export const useTimerPomodoro = (
