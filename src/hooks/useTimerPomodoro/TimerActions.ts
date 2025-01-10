@@ -25,17 +25,12 @@ export const useTimerActions = (
 ) => {
   onTimeWorkerMessage((e: TimerEventDetail) => {
     const { action, value, lastUpdated } = e;
-    console.log(lastUpdated);
     const timerState = value as TimerStatusType;
     if (lastUpdated) {
       setLastUpdated(lastUpdated);
     }
 
     if (action === "updateTimer") {
-      if (!value) {
-        console.log("updateTimer", e);
-      }
-
       if (value) {
         setTimerState(timerState);
       }
@@ -86,7 +81,6 @@ export const useTimerActions = (
   };
   const start = (): void => {
     setLastUpdated(Date.now());
-    console.log(lastUpdated);
     const alreadyStarted = checkAlreadyStarted();
     if (!alreadyStarted) {
       const newTimerState = {
@@ -206,40 +200,10 @@ export const useTimerActions = (
   }, [timerState.remainingTime]);
 
   useEffect(() => {
-    console.log("is this real?", timerState);
     if (timerState.isRunning) {
       startWorker(timerState);
     }
   }, []);
-  // useEffect(() => {
-  //   const updateTimer = (): void => {
-  //     setTimerState((prevState) => {
-  //       const now = Date.now();
-  //       const elapsedTime = now - lastUpdated;
-  //
-  //       if (prevState.remainingTime <= elapsedTime) {
-  //         return handleTimerCompletion();
-  //       }
-  //
-  //       setLastUpdated(now);
-  //
-  //       const remainingTime = prevState.remainingTime - elapsedTime;
-  //       updateTab(remainingTime);
-  //       return {
-  //         ...prevState,
-  //         remainingTime,
-  //       };
-  //     });
-  //   };
-  //
-  //   if (!timerState.isRunning) return;
-  //
-  //   const interval = setInterval(updateTimer, 1000);
-  //
-  //   return (): void => {
-  //     clearInterval(interval);
-  //   };
-  // }, [timerState.isRunning, setTimerState, handleTimerCompletion]);
 
   return {
     start,
