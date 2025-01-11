@@ -1,11 +1,7 @@
 import { TimerEventDetail, TimerStatusType } from "../types/types.ts";
 let intervalId: number | undefined;
 
-const updateTimer = (
-  lastUpdated: number,
-  timerState: TimerStatusType,
-  action: "start",
-) => {
+const updateTimer = (timerState: TimerStatusType, lastUpdated: number) => {
   return setInterval(() => {
     const now = Date.now();
     const elapsedTime = now - lastUpdated;
@@ -14,6 +10,9 @@ const updateTimer = (
         action: "finished",
         type: "background",
       });
+
+      stopUpdateTimer();
+      return;
     }
 
     const remainingTime = timerState.remainingTime - elapsedTime;
@@ -31,7 +30,6 @@ const updateTimer = (
       remainingTime,
     };
 
-    console.log(intervalId, action);
     lastUpdated = Date.now();
   }, 1000);
 };
@@ -55,7 +53,7 @@ self.onmessage = (e: MessageEvent<TimerEventDetail>): void => {
       return;
     }
     timerState = value as TimerStatusType;
-    intervalId = updateTimer(lastUpdated, timerState, action);
+    intervalId = updateTimer(timerState, lastUpdated);
   }
 
   if (action == "pause") {

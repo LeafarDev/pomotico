@@ -1,28 +1,36 @@
 import { useEffect } from "react";
 import {
-  ConfigDataType,
   TimerEventDetail,
   TimerFocusMode,
   TimerStatusType,
+  UseTimerActionsIt,
+  UseTimerStateIt,
+  UseTimerWorkerIt,
 } from "../../types/types.ts";
 import { formatTime, toMilliseconds } from "../../utils/timeUtils";
 
 export const useTimerActions = (
-  timerState: TimerStatusType,
-  setTimerState: (
-    timerStatus:
-      | TimerStatusType
-      | ((prevState: TimerStatusType) => TimerStatusType),
-  ) => void,
-  setPausedAt: (pausedAt: number) => void,
-  history: TimerStatusType[],
-  setHistory: (history: TimerStatusType[]) => void,
-  configData: ConfigDataType,
-  lastUpdated: number,
-  setLastUpdated: (lastUpdated: number) => void,
-  sendTimeWorkerMessage: (message: unknown) => void,
-  onTimeWorkerMessage,
-) => {
+  states: UseTimerStateIt,
+  useTimeWorkerActions: UseTimerWorkerIt,
+): UseTimerActionsIt => {
+  const {
+    timerState,
+    setTimerState,
+    history,
+    setHistory,
+    setPausedAt,
+    configData,
+    setLastUpdated,
+  } = states;
+
+  const {
+    skipWorker,
+    onTimeWorkerMessage,
+    startWorker,
+    resetWorker,
+    pauseWorker,
+  } = useTimeWorkerActions;
+
   onTimeWorkerMessage((e: TimerEventDetail) => {
     const { action, value, lastUpdated } = e;
     const timerState = value as TimerStatusType;
@@ -35,50 +43,14 @@ export const useTimerActions = (
         setTimerState(timerState);
       }
     }
+
+    if (action === "finished") {
+      const finishedTimer = handleTimerCompletion(false);
+      console.log("finishedTimer", finishedTimer);
+      setTimerState(finishedTimer);
+    }
   });
-  const startWorker = (timerState: TimerStatusType) => {
-    const now = Date.now();
 
-    setLastUpdated(now);
-    sendTimeWorkerMessage({
-      action: "start",
-      type: "background",
-      value: timerState,
-      lastUpdated: now,
-    });
-  };
-
-  const pauseWorker = (timerState: TimerStatusType) => {
-    const now = Date.now();
-    setLastUpdated(now);
-    sendTimeWorkerMessage({
-      action: "pause",
-      type: "background",
-      value: timerState,
-      lastUpdated: now,
-    });
-  };
-  const resetWorker = (timerState: TimerStatusType) => {
-    const now = Date.now();
-    setLastUpdated(now);
-    sendTimeWorkerMessage({
-      action: "reset",
-      type: "background",
-      value: timerState,
-      lastUpdated: now,
-    });
-  };
-
-  const skipWorker = (timerState: TimerStatusType) => {
-    const now = Date.now();
-    setLastUpdated(now);
-    sendTimeWorkerMessage({
-      action: "skip",
-      type: "background",
-      value: timerState,
-      lastUpdated: now,
-    });
-  };
   const start = (): void => {
     setLastUpdated(Date.now());
     const alreadyStarted = checkAlreadyStarted();
@@ -101,6 +73,7 @@ export const useTimerActions = (
 
   const pause = (): void => {
     setPausedAt(Date.now());
+    setLastUpdated(Date.now());
     const pausedTimer = { ...timerState, isRunning: false };
     pauseWorker(pausedTimer);
     setTimerState({ ...timerState, isRunning: false });
@@ -118,21 +91,23 @@ export const useTimerActions = (
             configData.restTime.seconds,
           );
 
-    const resetedTimerState = {
+    const resetTimerState = {
       ...timerState,
       isRunning: false,
       remainingTime,
     };
 
-    setTimerState(resetedTimerState);
+    setTimerState(resetTimerState);
 
-    resetWorker(resetedTimerState);
+    resetWorker(resetTimerState);
+    setLastUpdated(Date.now());
   };
 
   const skip = (): void => {
-    const skipedTimer = handleTimerCompletion(true);
-    skipWorker(skipedTimer);
-    setTimerState(skipedTimer);
+    const skippedTimer = handleTimerCompletion(true);
+    skipWorker(skippedTimer);
+    setLastUpdated(Date.now());
+    setTimerState(skippedTimer);
   };
 
   const getStartButtonText = (): string => {
@@ -201,6 +176,7 @@ export const useTimerActions = (
 
   useEffect(() => {
     if (timerState.isRunning) {
+      setLastUpdated(Date.now());
       startWorker(timerState);
     }
   }, []);

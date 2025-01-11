@@ -6,8 +6,9 @@ import {
   sprintHistory,
   timerData,
 } from "../../atoms/Timer";
+import { UseTimerStateIt } from "../../types/types.ts";
 
-export const useTimerState = () => {
+export const useTimerState = (): UseTimerStateIt => {
   const [timerState, setTimerState] = useAtom(timerData);
   const [history, setHistory] = useAtom(sprintHistory);
   const [pausedAt, setPausedAt] = useAtom(pausedTime);

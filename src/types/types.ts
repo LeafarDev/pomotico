@@ -83,3 +83,36 @@ declare global {
     timerEvent: CustomEvent<TimerEventDetail>;
   }
 }
+export interface UseTimerStateIt {
+  timerState: TimerStatusType;
+  setTimerState: (
+    timerStatus:
+      | TimerStatusType
+      | ((prevState: TimerStatusType) => TimerStatusType),
+  ) => void;
+  history: TimerStatusType[];
+  setHistory: (history: TimerStatusType[]) => void;
+  pausedAt: number | undefined;
+  setPausedAt: (pausedAt: number) => void;
+  configData: ConfigDataType;
+  lastUpdated: number;
+  setLastUpdated: (lastUpdated: number) => void;
+}
+export interface UseTimerWorkerIt {
+  sendTimeWorkerMessage: (message: unknown) => void;
+  onTimeWorkerMessage: (callback: (e: TimerEventDetail) => void) => void;
+  terminateTimeWorker: () => void;
+  startWorker: (timerState: TimerStatusType) => void;
+  resetWorker: (timerState: TimerStatusType) => void;
+  pauseWorker: (timerState: TimerStatusType) => void;
+  skipWorker: (timerState: TimerStatusType) => void;
+}
+
+export interface UseTimerActionsIt {
+  getStartButtonText: () => string;
+  handleTimerCompletion: (skipped?: boolean) => TimerStatusType;
+  pause: () => void;
+  reset: () => void;
+  skip: () => void;
+  start: () => void;
+}

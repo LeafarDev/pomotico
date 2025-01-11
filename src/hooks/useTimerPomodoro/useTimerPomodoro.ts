@@ -7,34 +7,15 @@ import { TimerPomodoroIt } from "../../types/types.ts";
 export const useTimerPomodoro = (
   sw: ServiceWorkerRegistration | null,
 ): TimerPomodoroIt => {
-  const {
-    timerState,
-    setTimerState,
-    history,
-    setHistory,
-    pausedAt,
-    setPausedAt,
-    configData,
-    lastUpdated,
-    setLastUpdated,
-  } = useTimerState();
+  const states = useTimerState();
+
+  const { timerState, history, pausedAt } = states;
 
   useTimerNotifications(sw, timerState, history, pausedAt);
 
-  const { sendTimeWorkerMessage, onTimeWorkerMessage } = useTimerWorker();
+  const useTimeWorkerActions = useTimerWorker();
 
-  const actions = useTimerActions(
-    timerState,
-    setTimerState,
-    setPausedAt,
-    history,
-    setHistory,
-    configData,
-    lastUpdated,
-    setLastUpdated,
-    sendTimeWorkerMessage,
-    onTimeWorkerMessage,
-  );
+  const actions = useTimerActions(states, useTimeWorkerActions);
 
   return {
     start: actions.start,
