@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 import { ReactElement } from "react";
+import { BackgroundSound } from "../BackgroundSound/BackgroundSound.tsx";
 import {
   ButtonsController,
   GifImage,
@@ -20,7 +21,8 @@ import { formatTime } from "../../utils/timeUtils.ts";
 
 export const Timer = (): ReactElement => {
   const { sw } = useServiceWorker();
-  const { start, pause, reset, skip, startButtonText } = useTimerPomodoro(sw);
+  const { start, pause, reset, skip, startButtonText, iframeRef } =
+    useTimerPomodoro(sw);
   const [{ mode: focusMode, remainingTime, isRunning }] = useAtom(timerData);
 
   return (
@@ -54,6 +56,7 @@ export const Timer = (): ReactElement => {
         <button onClick={skip}>Pular</button>
         <button onClick={isRunning ? pause : start}>{startButtonText}</button>
       </ButtonsController>
+      <BackgroundSound iframeRef={iframeRef} />
     </TimerContent>
   );
 };

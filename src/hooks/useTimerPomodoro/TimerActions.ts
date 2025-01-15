@@ -12,6 +12,7 @@ import { formatTime, toMilliseconds } from "../../utils/timeUtils";
 export const useTimerActions = (
   states: UseTimerStateIt,
   useTimeWorkerActions: UseTimerWorkerIt,
+  backgroundPlay: () => void,
 ): UseTimerActionsIt => {
   const {
     timerState,
@@ -46,7 +47,6 @@ export const useTimerActions = (
 
     if (action === "finished") {
       const finishedTimer = handleTimerCompletion(false);
-      console.log("finishedTimer", finishedTimer);
       setTimerState(finishedTimer);
     }
   });
@@ -69,6 +69,7 @@ export const useTimerActions = (
       setTimerState(newTimerState);
       startWorker(newTimerState);
     }
+    backgroundPlay();
   };
 
   const pause = (): void => {

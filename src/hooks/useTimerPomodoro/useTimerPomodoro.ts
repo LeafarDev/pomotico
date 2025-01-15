@@ -1,3 +1,4 @@
+import { useBackgroundSound } from "./backgroundSound.ts";
 import { useTimerActions } from "./timerActions.ts";
 import { useTimerNotifications } from "./timerNotifications.ts";
 import { useTimerState } from "./timerState.ts";
@@ -15,7 +16,9 @@ export const useTimerPomodoro = (
 
   const useTimeWorkerActions = useTimerWorker();
 
-  const actions = useTimerActions(states, useTimeWorkerActions);
+  const { backgroundPlay, iframeRef } = useBackgroundSound();
+
+  const actions = useTimerActions(states, useTimeWorkerActions, backgroundPlay);
 
   return {
     start: actions.start,
@@ -23,5 +26,6 @@ export const useTimerPomodoro = (
     reset: actions.reset,
     skip: actions.skip,
     startButtonText: actions.getStartButtonText(),
+    iframeRef,
   };
 };
