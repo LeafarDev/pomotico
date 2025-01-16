@@ -4,7 +4,7 @@ import {
   UseFormHandleSubmit,
 } from "react-hook-form";
 import { useHookFormMask } from "use-mask-input";
-import { ConfigDataToFormType } from "../../types/components/ConfigTimerFormTypes";
+import { ConfigDataToFormType } from "../components/ConfigTimerFormTypes.ts";
 
 export interface UseSprintFormLogicIt {
   closeModal: () => void;

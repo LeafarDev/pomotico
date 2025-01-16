@@ -27,10 +27,10 @@ function PWABadge(): ReactElement {
     },
   });
 
-  function close() {
+  const close = (): void => {
     setOfflineReady(false);
     setNeedRefresh(false);
-  }
+  };
 
   return (
     <div className="PWABadge" role="alert" aria-labelledby="toast-message">

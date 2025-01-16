@@ -47,7 +47,7 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
 
   const handleTextNotificationChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  ): Promise<void> => {
     if (e.target.checked) {
       if (sw) {
         const canSend = canSendTextNotification();
@@ -64,7 +64,7 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
 
   const handleSoundNotificationChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  ): Promise<void> => {
     if (e.target.checked) {
       try {
         await soundNotify.activateNotification();
@@ -82,7 +82,12 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
         setTextNotificationsAllowed(false);
       }
     }
-  }, [sw, formData.allowSoundNotifications]);
+  }, [
+    sw,
+    formData.allowSoundNotifications,
+    formData.allowTextNotifications,
+    canSendTextNotification,
+  ]);
 
   const {
     register,

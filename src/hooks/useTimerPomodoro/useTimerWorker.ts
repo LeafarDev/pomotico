@@ -11,7 +11,9 @@ export const useTimerWorker = (): UseTimerWorkerIt => {
     worker.postMessage(message);
   };
 
-  const onTimeWorkerMessage = (callback: (e: TimerEventDetailIt) => void) => {
+  const onTimeWorkerMessage = (
+    callback: (e: TimerEventDetailIt) => void,
+  ): void => {
     worker.onmessage = (e): void => callback(e.data);
   };
 

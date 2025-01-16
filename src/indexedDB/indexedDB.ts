@@ -8,15 +8,15 @@ export const IndexedDB = (): IndexedDBIt => {
     new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, 1);
 
-      request.onupgradeneeded = () => {
+      request.onupgradeneeded = (): void => {
         const db = request.result;
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: "key" });
         }
       };
 
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onsuccess = (): void => resolve(request.result);
+      request.onerror = (): void => reject(request.error);
     });
 
   const saveToDB = async (key: string, value: unknown) => {
@@ -25,8 +25,8 @@ export const IndexedDB = (): IndexedDBIt => {
     const store = transaction.objectStore(STORE_NAME);
     store.put({ key, value });
     return new Promise<void>((resolve, reject) => {
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
+      transaction.oncomplete = (): void => resolve();
+      transaction.onerror = (): void => reject(transaction.error);
     });
   };
 
@@ -36,8 +36,8 @@ export const IndexedDB = (): IndexedDBIt => {
     const store = transaction.objectStore(STORE_NAME);
     return new Promise((resolve, reject) => {
       const request = store.get(key);
-      request.onsuccess = () => resolve(request.result?.value || null);
-      request.onerror = () => reject(request.error);
+      request.onsuccess = (): void => resolve(request.result?.value || null);
+      request.onerror = (): void => reject(request.error);
     });
   };
 

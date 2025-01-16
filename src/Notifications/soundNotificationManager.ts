@@ -21,12 +21,15 @@ export const SoundNotificationManager = (
     }
   };
 
-  const playMultipleTimes = async (audioPath: string, repeatCount: number) => {
+  const playMultipleTimes = async (
+    audioPath: string,
+    repeatCount: number,
+  ): Promise<void> => {
     if (allowNotificationForce || allowSoundNotifications) {
       const audio = new Audio(audioPath);
       let playCount = 0;
 
-      const playNext = async () => {
+      const playNext = async (): Promise<void> => {
         playCount++;
         if (playCount < repeatCount) {
           audio.currentTime = 0;
@@ -45,7 +48,15 @@ export const SoundNotificationManager = (
     await play(activateNotificationWav);
   };
 
-  const getNotify = () => {
+  const getNotify = (): {
+    activateNotification: () => Promise<void>;
+    endFocus: () => Promise<void>;
+    endRest: () => Promise<void>;
+    startFocus: () => Promise<void>;
+    startRest: () => Promise<void>;
+    wakeUpFocus: () => Promise<void>;
+    wakeUpRest: () => Promise<void>;
+  } => {
     const startFocus = async (): Promise<void> => {
       await play(startFocusWav);
     };

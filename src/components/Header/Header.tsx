@@ -14,11 +14,11 @@ import { isConfigModalOpen } from "../../atoms/Timer.tsx";
 export const Header = (): ReactElement => {
   const [, setIsModalOpen] = useAtom(isConfigModalOpen);
 
-  const openConfigModal = () => {
+  const openConfigModal = (): void => {
     setIsModalOpen(true);
   };
 
-  const handleActivitiesClick = () => {
+  const handleActivitiesClick = (): void => {
     console.log("Atividades clicked!");
   };
 

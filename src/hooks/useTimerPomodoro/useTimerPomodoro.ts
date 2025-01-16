@@ -1,7 +1,7 @@
 import { useBackgroundSound } from "./backgroundSound.ts";
-import { useTimerActions } from "./TimerActions.ts";
-import { useTimerNotifications } from "./TimerNotifications.ts";
-import { useTimerState } from "./TimerState.ts";
+import { useTimerActions } from "./timerActions.ts";
+import { useTimerNotifications } from "./timerNotifications.ts";
+import { useTimerState } from "./timerState.ts";
 import { useTimerWorker } from "./useTimerWorker.ts";
 import { TimerPomodoroIt } from "../../types/hooks/TimerPomodoroIt.ts";
 

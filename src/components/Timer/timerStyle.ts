@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import { styled, keyframes } from "styled-components";
 
 export const TimerContent = styled.div`
   display: flex;
@@ -95,7 +95,8 @@ export const StatusText = styled.div<{ $isFocusing: boolean }>`
   color: #dfd8d8;
 
   &::after {
-    content: "${(props) => (props.$isFocusing ? "Focando" : "Descansando")}";
+    content: "${(props): "Focando" | "Descansando" =>
+      props.$isFocusing ? "Focando" : "Descansando"}";
     animation: ${dotAnimation} 1.5s infinite;
   }
 `;

@@ -16,7 +16,7 @@ export const ServiceWorkerProvider = ({
   children,
 }: {
   children: ReactNode;
-}) => {
+}): Element => {
   const [sw, setSw] = useState<ServiceWorkerRegistration | null>(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export const ServiceWorkerProvider = ({
   );
 };
 
-export const useServiceWorker = () => {
+export const useServiceWorker = (): ServiceWorkerContextProps => {
   const context = useContext(ServiceWorkerContext);
   if (!context) {
     throw new Error(

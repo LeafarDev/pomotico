@@ -15,7 +15,7 @@ export const useTimerNotifications = (
   timerState: TimerStatusType,
   historyState: TimerStatusType[],
   pausedAt: number | undefined,
-) => {
+): void => {
   const [lastNotified, setLastNotified] = useState(-1);
 
   const { notify: soundNotify } = SoundNotificationManager();
@@ -91,7 +91,7 @@ export const useTimerNotifications = (
         }
       }
     }, minutesToMilliseconds(3));
-    return () => clearInterval(interval);
+    return (): void => clearInterval(interval);
   }, [
     historyState,
     pausedAt,

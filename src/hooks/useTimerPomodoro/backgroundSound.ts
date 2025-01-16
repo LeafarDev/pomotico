@@ -6,7 +6,7 @@ export const useBackgroundSound = (): UseBackgroundSoundIt => {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const widgetRef = useRef<SCWidget | null>(null);
 
-  const backgroundPlay = () => {
+  const backgroundPlay = (): void => {
     if (widgetRef) {
       if (widgetRef.current) {
         widgetRef.current.play();
@@ -17,7 +17,7 @@ export const useBackgroundSound = (): UseBackgroundSoundIt => {
   useEffect(() => {
     const widgetScript = document.createElement("script");
     widgetScript.src = "https://w.soundcloud.com/player/api.js";
-    widgetScript.onload = () => {
+    widgetScript.onload = (): void => {
       if (iframeRef.current) {
         const widget = window.SC.Widget(iframeRef.current);
 
@@ -30,7 +30,7 @@ export const useBackgroundSound = (): UseBackgroundSoundIt => {
     };
     document.body.appendChild(widgetScript);
 
-    return () => {
+    return (): void => {
       document.body.removeChild(widgetScript);
     };
   }, []);

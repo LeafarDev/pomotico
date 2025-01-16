@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { styled } from "styled-components";
 export const InputGroup = styled.div`
   margin-bottom: 15px;
   display: flex;
