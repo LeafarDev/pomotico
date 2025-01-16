@@ -82,12 +82,7 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
         setTextNotificationsAllowed(false);
       }
     }
-  }, [
-    sw,
-    formData.allowSoundNotifications,
-    formData.allowTextNotifications,
-    canSendTextNotification,
-  ]);
+  }, [sw]);
 
   const {
     register,

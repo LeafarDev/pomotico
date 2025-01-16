@@ -4,6 +4,7 @@ import {
   useEffect,
   ReactNode,
   useState,
+  ReactElement,
 } from "react";
 
 import { ServiceWorkerContextProps } from "../types/serviceWorker/ServiceWorkerContextProps.ts";
@@ -16,7 +17,7 @@ export const ServiceWorkerProvider = ({
   children,
 }: {
   children: ReactNode;
-}): Element => {
+}): ReactElement => {
   const [sw, setSw] = useState<ServiceWorkerRegistration | null>(null);
 
   useEffect(() => {

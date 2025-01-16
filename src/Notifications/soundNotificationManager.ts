@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-
+import Swal from "sweetalert2";
 import activateNotificationWav from "../assets/songs/activatenotification.wav";
 import endFocusWav from "../assets/songs/endfocus.wav";
 import endRestWav from "../assets/songs/endrest.wav";
@@ -17,9 +17,66 @@ export const SoundNotificationManager = (
 
   const play = async (path: string): Promise<void> => {
     if (allowNotificationForce || allowSoundNotifications) {
-      await new Audio(path).play();
+      try {
+        await new Audio(path).play();
+      } catch (error) {
+        if (error instanceof DOMException) {
+          await requestAudioPermission();
+        }
+      }
     }
   };
+
+  async function requestAudioPermission(): Promise<void> {
+    try {
+      const result = await Swal.fire({
+        title: "Notificações sonoras bloqueadas pelo navegador",
+        text: "Deseja permitir notificações sonoras?",
+        icon: "question",
+        showCancelButton: true,
+        cancelButtonText: "Negar",
+        confirmButtonText: "Permitir",
+      });
+
+      if (result.isConfirmed) {
+        await activateNotification();
+        await Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: "success",
+          title: "Notificações sonoras permitidas",
+        });
+      } else {
+        await Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: "warning",
+          title: "Notificações sonoras não permitidas",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Playback Failed",
+        text: "Audio playback was prevented by your browser or an error occurred.",
+      });
+      console.error("Error while trying to play audio:", error);
+    }
+  }
 
   const playMultipleTimes = async (
     audioPath: string,
@@ -28,19 +85,24 @@ export const SoundNotificationManager = (
     if (allowNotificationForce || allowSoundNotifications) {
       const audio = new Audio(audioPath);
       let playCount = 0;
+      try {
+        const playNext = async (): Promise<void> => {
+          playCount++;
+          if (playCount < repeatCount) {
+            audio.currentTime = 0;
+            await audio.play();
+          } else {
+            audio.removeEventListener("ended", playNext);
+          }
+        };
 
-      const playNext = async (): Promise<void> => {
-        playCount++;
-        if (playCount < repeatCount) {
-          audio.currentTime = 0;
-          await audio.play();
-        } else {
-          audio.removeEventListener("ended", playNext);
+        audio.addEventListener("ended", playNext);
+        await audio.play();
+      } catch (error) {
+        if (error instanceof DOMException) {
+          await requestAudioPermission();
         }
-      };
-
-      audio.addEventListener("ended", playNext);
-      await audio.play();
+      }
     }
   };
 
