@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { SoundNotificationManager } from "../../Notifications/soundNotificationManager.ts";
 import { TextNotificationManager } from "../../Notifications/textNotificationManager.ts";
-import { TimerStatusType, TimerFocusMode } from "../../types/types.ts";
+import {
+  TimerFocusMode,
+  TimerStatusType,
+} from "../../types/components/TimerTypes.ts";
 import {
   differenceInMinutes,
   minutesToMilliseconds,

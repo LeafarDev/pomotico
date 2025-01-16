@@ -1,6 +1,5 @@
 import { useAtom } from "jotai";
 import { ReactElement } from "react";
-import { BackgroundSound } from "../BackgroundSound/BackgroundSound.tsx";
 import {
   ButtonsController,
   GifImage,
@@ -16,8 +15,9 @@ import waitingGif from "../../assets/gifs/waiting.gif";
 import { timerData } from "../../atoms/Timer.tsx";
 import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
 import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
-import { TimerFocusMode } from "../../types/types.ts";
+import { TimerFocusMode } from "../../types/components/TimerTypes.ts";
 import { formatTime } from "../../utils/timeUtils.ts";
+import { BackgroundSound } from "../BackgroundSound/BackgroundSound.tsx";
 
 export const Timer = (): ReactElement => {
   const { sw } = useServiceWorker();

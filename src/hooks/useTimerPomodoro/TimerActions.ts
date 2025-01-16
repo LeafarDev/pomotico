@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import {
-  TimerEventDetail,
   TimerFocusMode,
   TimerStatusType,
-  UseTimerActionsIt,
-  UseTimerStateIt,
-  UseTimerWorkerIt,
-} from "../../types/types.ts";
+} from "../../types/components/TimerTypes.ts";
+import { UseTimerActionsIt } from "../../types/hooks/UseTimerActionsIt.ts";
+import { UseTimerStateIt } from "../../types/hooks/UseTimerStateIt.ts";
+import { UseTimerWorkerIt } from "../../types/hooks/UseTimerWorkerIt.ts";
 import { formatTime, toMilliseconds } from "../../utils/timeUtils";
+import { TimerEventDetail } from "../../workers/TimerEventDetail.ts";
 
 export const useTimerActions = (
   states: UseTimerStateIt,

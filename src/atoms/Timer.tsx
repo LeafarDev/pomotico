@@ -1,10 +1,10 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { ConfigDataType } from "../types/components/ConfigTimerFormTypes.ts";
 import {
-  ConfigDataType,
   TimerFocusMode,
   TimerStatusType,
-} from "../types/types.ts";
+} from "../types/components/TimerTypes.ts";
 
 export const isConfigModalOpen = atom(false);
 
@@ -19,7 +19,6 @@ export const timerData = atomWithStorage(
   undefined,
   {
     getOnInit: true,
-
   },
 );
 

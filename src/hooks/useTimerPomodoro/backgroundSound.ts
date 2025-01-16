@@ -1,10 +1,8 @@
-import { MutableRefObject, useEffect, useRef } from "react";
-import { SCWidget } from "../../types/scTypes.ts";
+import { useEffect, useRef } from "react";
+import { SCWidget } from "../../types/global/SCWidgetTypes.ts";
+import { UseBackgroundSoundIt } from "../../types/hooks/UseBackgroundSoundIt.ts";
 
-export const useBackgroundSound = (): {
-  backgroundPlay: () => void;
-  iframeRef: MutableRefObject<HTMLIFrameElement | null>;
-} => {
+export const useBackgroundSound = (): UseBackgroundSoundIt => {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const widgetRef = useRef<SCWidget | null>(null);
 

@@ -12,10 +12,9 @@ import ClockIcon from "../../assets/pomotico-logo-white.svg";
 import { isConfigModalOpen } from "../../atoms/Timer.tsx";
 
 export const Header = (): ReactElement => {
-  const [isModalOpen, setIsModalOpen] = useAtom(isConfigModalOpen);
+  const [, setIsModalOpen] = useAtom(isConfigModalOpen);
 
   const openConfigModal = () => {
-    console.log(isModalOpen);
     setIsModalOpen(true);
   };
 

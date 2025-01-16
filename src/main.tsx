@@ -7,8 +7,8 @@ import { Header } from "./components/Header/Header.tsx";
 import App from "./pages/App.tsx";
 import "./index.css";
 import { GlobalStyle } from "./pages/styles/globalStyle.ts";
-import PWABadge from "./ServiceWorker/PWABadge.tsx";
-import { ServiceWorkerProvider } from "./ServiceWorker/ServiceWorkerContext.tsx";
+import PWABadge from "./serviceWorker/PWABadge.tsx";
+import { ServiceWorkerProvider } from "./serviceWorker/ServiceWorkerContext.tsx";
 
 Modal.setAppElement("#root");
 

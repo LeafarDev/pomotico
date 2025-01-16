@@ -16,8 +16,9 @@ import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
 import {
   ConfigDataToFormType,
   ConfigDataType,
-  TimerFocusMode,
-} from "../../types/types.ts";
+} from "../../types/components/ConfigTimerFormTypes.ts";
+import { TimerFocusMode } from "../../types/components/TimerTypes.ts";
+import { UseSprintFormLogicIt } from "../../types/hooks/UseSprintFormLogicIt.ts";
 import { toMilliseconds } from "../../utils/timeUtils.ts";
 
 const Toast = Swal.mixin({
@@ -31,7 +32,7 @@ const Toast = Swal.mixin({
   },
 });
 
-export const useSprintFormLogic = () => {
+export const useSprintFormLogic = (): UseSprintFormLogicIt => {
   const [formData, setFormData] = useAtom(sprintConfigData);
   const [timer, setTimer] = useAtom(timerData);
   const [isModalOpen, setIsModalOpen] = useAtom(isConfigModalOpen);

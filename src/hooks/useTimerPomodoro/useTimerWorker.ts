@@ -1,10 +1,8 @@
-import {
-  TimerEventDetail,
-  TimerStatusType,
-  UseTimerWorkerIt,
-} from "../../types/types.ts";
+import { TimerStatusType } from "../../types/components/TimerTypes.ts";
+import { UseTimerWorkerIt } from "../../types/hooks/UseTimerWorkerIt.ts";
+import { TimerEventDetailIt } from "../../types/webWorker/TimerEventDetailIt.ts";
 // eslint-disable-next-line import/no-unresolved
-import TimerWorker from "../../workers/timerWorker?worker";
+import TimerWorker from "../../webWorker/TimerWorker.ts?worker";
 
 const worker = new TimerWorker();
 
@@ -13,7 +11,7 @@ export const useTimerWorker = (): UseTimerWorkerIt => {
     worker.postMessage(message);
   };
 
-  const onTimeWorkerMessage = (callback: (e: TimerEventDetail) => void) => {
+  const onTimeWorkerMessage = (callback: (e: TimerEventDetailIt) => void) => {
     worker.onmessage = (e): void => callback(e.data);
   };
 
@@ -28,6 +26,14 @@ export const useTimerWorker = (): UseTimerWorkerIt => {
       type: "background",
       value: timerState,
       lastUpdated: now,
+    });
+  };
+
+  const resumeWorker = (timerState: TimerStatusType): void => {
+    sendTimeWorkerMessage({
+      action: "resume",
+      type: "background",
+      value: timerState,
     });
   };
 
@@ -68,5 +74,6 @@ export const useTimerWorker = (): UseTimerWorkerIt => {
     resetWorker,
     pauseWorker,
     skipWorker,
+    resumeWorker,
   };
 };
