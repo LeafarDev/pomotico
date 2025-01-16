@@ -10,9 +10,9 @@ import {
   sprintConfigData,
   timerData,
 } from "../../atoms/Timer.tsx";
-import { SoundNotificationManager } from "../../Notifications/soundNotificationManager.ts";
-import { TextNotificationManager } from "../../Notifications/textNotificationManager.ts";
-import { useServiceWorker } from "../../ServiceWorker/ServiceWorkerContext.tsx";
+import { SoundNotificationManager } from "../../notifications/soundNotificationManager.ts";
+import { TextNotificationManager } from "../../notifications/textNotificationManager.ts";
+import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
 import {
   ConfigDataToFormType,
   ConfigDataType,

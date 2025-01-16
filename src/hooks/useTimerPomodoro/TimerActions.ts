@@ -7,7 +7,7 @@ import { UseTimerActionsIt } from "../../types/hooks/UseTimerActionsIt.ts";
 import { UseTimerStateIt } from "../../types/hooks/UseTimerStateIt.ts";
 import { UseTimerWorkerIt } from "../../types/hooks/UseTimerWorkerIt.ts";
 import { formatTime, toMilliseconds } from "../../utils/timeUtils";
-import { TimerEventDetail } from "../../workers/TimerEventDetail.ts";
+import { TimerEventDetailIt } from "../../types/webWorker/TimerEventDetailIt.ts";
 
 export const useTimerActions = (
   states: UseTimerStateIt,
@@ -30,11 +30,13 @@ export const useTimerActions = (
     startWorker,
     resetWorker,
     pauseWorker,
+    resumeWorker,
   } = useTimeWorkerActions;
 
-  onTimeWorkerMessage((e: TimerEventDetail) => {
+  onTimeWorkerMessage((e: TimerEventDetailIt) => {
     const { action, value, lastUpdated } = e;
     const timerState = value as TimerStatusType;
+
     if (lastUpdated) {
       setLastUpdated(lastUpdated);
     }
@@ -178,7 +180,7 @@ export const useTimerActions = (
   useEffect(() => {
     if (timerState.isRunning) {
       setLastUpdated(Date.now());
-      startWorker(timerState);
+      resumeWorker(timerState);
     }
   }, []);
 

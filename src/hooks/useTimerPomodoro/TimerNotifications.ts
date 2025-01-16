@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { SoundNotificationManager } from "../../Notifications/soundNotificationManager.ts";
-import { TextNotificationManager } from "../../Notifications/textNotificationManager.ts";
+import { SoundNotificationManager } from "../../notifications/soundNotificationManager.ts";
+import { TextNotificationManager } from "../../notifications/textNotificationManager.ts";
 import {
   TimerFocusMode,
   TimerStatusType,
