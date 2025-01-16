@@ -6,8 +6,8 @@ import {
 import { UseTimerActionsIt } from "../../types/hooks/UseTimerActionsIt.ts";
 import { UseTimerStateIt } from "../../types/hooks/UseTimerStateIt.ts";
 import { UseTimerWorkerIt } from "../../types/hooks/UseTimerWorkerIt.ts";
-import { formatTime, toMilliseconds } from "../../utils/timeUtils";
 import { TimerEventDetailIt } from "../../types/webWorker/TimerEventDetailIt.ts";
+import { formatTime, toMilliseconds } from "../../utils/timeUtils";
 
 export const useTimerActions = (
   states: UseTimerStateIt,

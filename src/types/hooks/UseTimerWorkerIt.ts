@@ -1,5 +1,5 @@
-import { TimerEventDetailIt } from "../webWorker/TimerEventDetailIt.ts";
 import { TimerStatusType } from "../components/TimerTypes.ts";
+import { TimerEventDetailIt } from "../webWorker/TimerEventDetailIt.ts";
 
 export interface UseTimerWorkerIt {
   sendTimeWorkerMessage: (message: unknown) => void;

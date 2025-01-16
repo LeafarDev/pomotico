@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, RegisterOptions } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useHookFormMask } from "use-mask-input";
 import { sprintFormSchema } from "./configTimerFormValidation.ts";
@@ -20,7 +20,6 @@ import {
 import { TimerFocusMode } from "../../types/components/TimerTypes.ts";
 import { UseSprintFormLogicIt } from "../../types/hooks/UseSprintFormLogicIt.ts";
 import { toMilliseconds } from "../../utils/timeUtils.ts";
-
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -94,7 +93,10 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
     resolver: zodResolver(sprintFormSchema),
   });
 
-  const registerWithMask = useHookFormMask(register);
+  const registerWithMask = useHookFormMask<
+    ConfigDataToFormType,
+    RegisterOptions
+  >(register);
 
   const resetForm = () => {
     if (formData) {

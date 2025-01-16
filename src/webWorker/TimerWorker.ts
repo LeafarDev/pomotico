@@ -1,6 +1,6 @@
-import { TimerEventDetailIt } from "../types/webWorker/TimerEventDetailIt.ts";
 import { IndexedDB } from "../indexedDB/indexedDB.ts";
 import { TimerStatusType } from "../types/components/TimerTypes.ts";
+import { TimerEventDetailIt } from "../types/webWorker/TimerEventDetailIt.ts";
 
 let intervalId: NodeJS.Timeout | undefined;
 const { saveToDB, loadFromDB } = IndexedDB();
