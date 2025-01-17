@@ -8,7 +8,7 @@ export interface UseTimerStateIt {
       | TimerStatusType
       | ((prevState: TimerStatusType) => TimerStatusType),
   ) => void;
-  history: TimerStatusType[];
+  histories: TimerStatusType[];
   setHistory: (history: TimerStatusType[]) => void;
   pausedAt: number | undefined;
   setPausedAt: (pausedAt: number) => void;

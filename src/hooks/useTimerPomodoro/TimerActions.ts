@@ -7,7 +7,7 @@ import { UseTimerActionsIt } from "../../types/hooks/UseTimerActionsIt.ts";
 import { UseTimerStateIt } from "../../types/hooks/UseTimerStateIt.ts";
 import { UseTimerWorkerIt } from "../../types/hooks/UseTimerWorkerIt.ts";
 import { TimerEventDetailIt } from "../../types/webWorker/TimerEventDetailIt.ts";
-import { formatTime, toMilliseconds } from "../../utils/timeUtils";
+import { toMilliseconds } from "../../utils/timeUtils";
 
 export const useTimerActions = (
   states: UseTimerStateIt,
@@ -17,12 +17,117 @@ export const useTimerActions = (
   const {
     timerState,
     setTimerState,
-    history,
+    histories,
     setHistory,
     setPausedAt,
     configData,
     setLastUpdated,
   } = states;
+
+  const getNextMode = (mode: TimerFocusMode): TimerFocusMode => {
+    const { Focusing, Resting, LongBreak } = TimerFocusMode;
+    const { qtySprintForLongBreak } = configData;
+    const historiesLength = histories.length;
+
+    if (mode === Focusing) {
+      return Resting;
+    } else if (mode === Resting) {
+      if (historiesLength) {
+        const qtyRestsFinished =
+          histories.filter((item) => item.mode === Resting).length + 1;
+
+        if (qtyRestsFinished >= qtySprintForLongBreak) {
+          const lastLongBreakIndex = histories.findLastIndex(
+            (history) => history.mode === LongBreak,
+          );
+
+          if (
+            lastLongBreakIndex > 0 ||
+            qtyRestsFinished === qtySprintForLongBreak
+          ) {
+            const partialHistories = histories
+              .slice(lastLongBreakIndex + 1)
+              .filter((item) => item.mode === Resting);
+
+            const qtyRestingPartials = partialHistories.length + 1;
+            if (qtyRestingPartials === qtySprintForLongBreak) {
+              return LongBreak;
+            }
+          }
+        }
+      }
+    }
+    return Focusing;
+  };
+
+  const getNextRemainingTime = (nextMode: TimerFocusMode): number => {
+    const { Focusing, Resting } = TimerFocusMode;
+
+    if (nextMode === Focusing) {
+      return toMilliseconds(
+        configData.sprintTime.minutes,
+        configData.sprintTime.seconds,
+      );
+    } else if (nextMode === Resting) {
+      return toMilliseconds(
+        configData.restTime.minutes,
+        configData.restTime.seconds,
+      );
+    }
+
+    return toMilliseconds(
+      configData.longBreakTime.minutes,
+      configData.longBreakTime.seconds,
+    );
+  };
+
+  const getCurrentRemainingTime = (mode: TimerFocusMode) => {
+    const { Resting, LongBreak } = TimerFocusMode;
+
+    switch (mode) {
+      case Resting:
+        return toMilliseconds(
+          configData.restTime.minutes,
+          configData.restTime.seconds,
+        );
+      case LongBreak:
+        return toMilliseconds(
+          configData.longBreakTime.minutes,
+          configData.longBreakTime.seconds,
+        );
+      default:
+        return toMilliseconds(
+          configData.sprintTime.minutes,
+          configData.sprintTime.seconds,
+        );
+    }
+  };
+
+  const handleTimerCompletion = (skipped = false): TimerStatusType => {
+    const updatedHistory = [
+      ...histories,
+      { ...timerState, endTime: Date.now(), skipped },
+    ];
+    const nextMode = getNextMode(timerState.mode);
+    const remainingTime = getNextRemainingTime(nextMode);
+    setHistory(updatedHistory);
+
+    const nextTimer = {
+      remainingTime,
+      isRunning: false,
+      skipped: false,
+      mode: nextMode,
+    };
+
+    setTimerState(nextTimer);
+    setLastUpdated(Date.now());
+    return {
+      remainingTime,
+      isRunning: false,
+      skipped: false,
+      mode: nextMode,
+    };
+  };
 
   const {
     skipWorker,
@@ -48,14 +153,13 @@ export const useTimerActions = (
     }
 
     if (action === "finished") {
-      const finishedTimer = handleTimerCompletion(false);
-      setTimerState(finishedTimer);
+      handleTimerCompletion(false);
     }
   });
 
   const start = (): void => {
     setLastUpdated(Date.now());
-    const alreadyStarted = checkAlreadyStarted();
+    const alreadyStarted = checkTimerAlreadyStarted();
     if (!alreadyStarted) {
       const newTimerState = {
         ...timerState,
@@ -107,75 +211,19 @@ export const useTimerActions = (
   };
 
   const skip = (): void => {
-    const skippedTimer = handleTimerCompletion(true);
-    skipWorker(skippedTimer);
-    setLastUpdated(Date.now());
-    setTimerState(skippedTimer);
+    const nextTimer = handleTimerCompletion(true);
+    skipWorker(nextTimer);
   };
 
-  const getStartButtonText = (): string => {
-    if (timerState.isRunning) return "Pausar";
-    if (timerState.mode === TimerFocusMode.Focusing) {
-      return checkAlreadyStarted() ? "Retomar Sprint" : "Iniciar Foco";
-    }
-    return checkAlreadyStarted() ? "Retomar Descanso" : "Iniciar Descanso";
-  };
+  const checkTimerAlreadyStarted = (): boolean => {
+    const { mode: currentMode } = timerState;
 
-  const checkAlreadyStarted = (): boolean => {
-    const originalRemainingTime =
-      timerState.mode === TimerFocusMode.Focusing
-        ? toMilliseconds(
-            configData.sprintTime.minutes,
-            configData.sprintTime.seconds,
-          )
-        : toMilliseconds(
-            configData.restTime.minutes,
-            configData.restTime.seconds,
-          );
+    const originalRemainingTime = getCurrentRemainingTime(currentMode);
 
     return <boolean>(
       (timerState.startTime && timerState.remainingTime < originalRemainingTime)
     );
   };
-
-  const handleTimerCompletion = (skipped = false): TimerStatusType => {
-    const updatedHistory = [
-      ...history,
-      { ...timerState, endTime: Date.now(), skipped },
-    ];
-    setHistory(updatedHistory);
-
-    const remainingTime =
-      timerState.mode === TimerFocusMode.Focusing
-        ? toMilliseconds(
-            configData.restTime.minutes,
-            configData.restTime.seconds,
-          )
-        : toMilliseconds(
-            configData.sprintTime.minutes,
-            configData.sprintTime.seconds,
-          );
-
-    const mode =
-      timerState.mode === TimerFocusMode.Focusing
-        ? TimerFocusMode.Resting
-        : TimerFocusMode.Focusing;
-
-    return {
-      remainingTime,
-      isRunning: false,
-      skipped: false,
-      mode,
-    };
-  };
-
-  const updateTab = (remainingTime: number): void => {
-    document.title = "Pomotico - " + formatTime(remainingTime);
-  };
-
-  useEffect(() => {
-    updateTab(timerState.remainingTime);
-  }, [timerState.remainingTime]);
 
   useEffect(() => {
     if (timerState.isRunning) {
@@ -189,7 +237,6 @@ export const useTimerActions = (
     pause,
     reset,
     skip,
-    getStartButtonText,
-    handleTimerCompletion,
+    checkAlreadyStarted: checkTimerAlreadyStarted,
   };
 };

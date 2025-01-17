@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useForm, RegisterOptions } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useHookFormMask } from "use-mask-input";
-import { sprintFormSchema } from "./configTimerFormValidation.ts";
 import {
   isConfigModalOpen,
   sprintConfigData,
   timerData,
 } from "../../atoms/Timer.tsx";
+import { sprintFormSchema } from "../../components/Configuration/configTimerFormValidation.ts";
 import { SoundNotificationManager } from "../../notifications/soundNotificationManager.ts";
 import { TextNotificationManager } from "../../notifications/textNotificationManager.ts";
 import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
@@ -102,7 +102,7 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
     if (formData) {
       reset({
         ...formData,
-        sprintGoal: String(formData.sprintGoal),
+        qtySprintForLongBreak: String(formData.qtySprintForLongBreak),
         sprintTime: {
           minutes: String(formData.sprintTime.minutes),
           seconds: String(formData.sprintTime.seconds),
@@ -110,6 +110,11 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
         restTime: {
           minutes: String(formData.restTime.minutes),
           seconds: String(formData.restTime.seconds),
+        },
+        longBreakTime: {
+          hours: String(formData.longBreakTime.hours),
+          minutes: String(formData.longBreakTime.minutes),
+          seconds: String(formData.longBreakTime.seconds),
         },
       });
     }
@@ -121,8 +126,8 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
   };
 
   const onSubmit = (data: ConfigDataToFormType) => {
-    const formattedData = {
-      sprintGoal: parseInt(String(data.sprintGoal), 10),
+    const formattedData: ConfigDataType = {
+      qtySprintForLongBreak: parseInt(String(data.qtySprintForLongBreak), 10),
       sprintTime: {
         minutes: parseInt(String(data.sprintTime.minutes), 10),
         seconds: parseInt(String(data.sprintTime.seconds), 10),
@@ -131,9 +136,14 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
         minutes: parseInt(String(data.restTime.minutes), 10),
         seconds: parseInt(String(data.restTime.seconds), 10),
       },
+      longBreakTime: {
+        hours: parseInt(String(data.longBreakTime.hours), 10),
+        minutes: parseInt(String(data.longBreakTime.minutes), 10),
+        seconds: parseInt(String(data.longBreakTime.seconds), 10),
+      },
       allowSoundNotifications: data.allowSoundNotifications,
       allowTextNotifications: data.allowTextNotifications,
-    } as ConfigDataType;
+    };
 
     setFormData(formattedData);
 

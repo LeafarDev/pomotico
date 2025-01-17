@@ -69,7 +69,7 @@ export const SoundNotificationManager = (
         });
       }
     } catch (error) {
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: "Playback Failed",
         text: "Audio playback was prevented by your browser or an error occurred.",

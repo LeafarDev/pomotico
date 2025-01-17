@@ -15,3 +15,7 @@
     --swal2-toast-background: #19191a;
     --swal2-toast-button-focus-box-shadow: 0 0 0 1px #19191a, 0 0 0 3px rgba(100, 150, 200, 0.6);
 }
+
+:root {
+    --status-text: '...'
+}

@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useAtom } from "jotai/index";
+import { useEffect } from "react";
+import { lastEndedNotified } from "../../atoms/Timer.tsx";
 import { SoundNotificationManager } from "../../notifications/soundNotificationManager.ts";
 import { TextNotificationManager } from "../../notifications/textNotificationManager.ts";
 import {
@@ -15,8 +17,9 @@ export const useTimerNotifications = (
   timerState: TimerStatusType,
   historyState: TimerStatusType[],
   pausedAt: number | undefined,
+  checkAlreadyStarted: () => boolean,
 ): void => {
-  const [lastNotified, setLastNotified] = useState(-1);
+  const [lastNotified, setLastNotified] = useAtom(lastEndedNotified);
 
   const { notify: soundNotify } = SoundNotificationManager();
   const {
@@ -102,13 +105,6 @@ export const useTimerNotifications = (
   ]);
 
   useEffect(() => {
-    if (timerState.startTime) {
-      if (timerState.mode === TimerFocusMode.Resting) {
-        soundNotify.startRest();
-      } else {
-        soundNotify.startFocus();
-      }
-    }
     if (historyState.length) {
       const lastFinishedIndex = historyState.length - 1;
       if (
@@ -119,5 +115,16 @@ export const useTimerNotifications = (
         sendFinishedAlert(historyState[historyState.length - 1].mode);
       }
     }
-  }, [timerState.startTime, historyState]);
+  }, [historyState]);
+
+  useEffect(() => {
+    const started = checkAlreadyStarted();
+    if (timerState.startTime && timerState.isRunning && !started) {
+      if (timerState.mode === TimerFocusMode.Resting) {
+        soundNotify.startRest();
+      } else {
+        soundNotify.startFocus();
+      }
+    }
+  }, [timerState.startTime]);
 };

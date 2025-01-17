@@ -2,6 +2,8 @@ import { useBackgroundSound } from "./backgroundSound.ts";
 import { useTimerActions } from "./timerActions.ts";
 import { useTimerNotifications } from "./timerNotifications.ts";
 import { useTimerState } from "./timerState.ts";
+import { useTimerStatusDescriptions } from "./timerStatusDescriptions.ts";
+import { useTimerTab } from "./timerTab.ts";
 import { useTimerWorker } from "./useTimerWorker.ts";
 import { TimerPomodoroIt } from "../../types/hooks/TimerPomodoroIt.ts";
 
@@ -10,9 +12,7 @@ export const useTimerPomodoro = (
 ): TimerPomodoroIt => {
   const states = useTimerState();
 
-  const { timerState, history, pausedAt } = states;
-
-  useTimerNotifications(sw, timerState, history, pausedAt);
+  const { timerState, histories, pausedAt } = states;
 
   const useTimeWorkerActions = useTimerWorker();
 
@@ -20,12 +20,26 @@ export const useTimerPomodoro = (
 
   const actions = useTimerActions(states, useTimeWorkerActions, backgroundPlay);
 
+  const { getStartButtonText, getStatusText, getStatusGif } =
+    useTimerStatusDescriptions(states, actions.checkAlreadyStarted);
+
+  useTimerNotifications(
+    sw,
+    timerState,
+    histories,
+    pausedAt,
+    actions.checkAlreadyStarted,
+  );
+  useTimerTab(states);
+
   return {
     start: actions.start,
     pause: actions.pause,
     reset: actions.reset,
     skip: actions.skip,
-    startButtonText: actions.getStartButtonText(),
+    startButtonText: getStartButtonText(),
+    statusDescriptionText: getStatusText(),
+    statusGif: getStatusGif(),
     iframeRef,
   };
 };

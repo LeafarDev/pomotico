@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+
 export const InputGroup = styled.div`
   margin-bottom: 15px;
   display: flex;
@@ -17,15 +18,24 @@ export const InputGroup = styled.div`
     background-color: #444;
     color: #fff;
   }
+
+  div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 `;
 
 export const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  overflow: scroll;
 `;
 
 export const ButtonConfigModal = styled.button`
+  position: sticky;
+  display: block;
   padding: 8px 16px; /* Smaller padding for more compact buttons */
   border-radius: 6px; /* Slightly smaller border radius */
   font-size: 14px; /* Smaller font size */

@@ -18,7 +18,7 @@ export const useTimerState = (): UseTimerStateIt => {
   return {
     timerState,
     setTimerState,
-    history,
+    histories: history,
     setHistory,
     pausedAt,
     setPausedAt,

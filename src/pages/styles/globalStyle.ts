@@ -2,6 +2,10 @@ import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
     /* Document */
+    * {
+        box-sizing: border-box;
+    }
+    
     html {
         line-height: 1.15;
         -webkit-text-size-adjust: 100%;
@@ -196,6 +200,29 @@ export const GlobalStyle = createGlobalStyle`
         overflow-y: auto; /* Add scroll if content overflows */
     }
 
+    /* Media query for screens wider than 768px (tablets and up) */
+    @media (min-width: 768px) {
+        .modal-content {
+            max-width: 70%; /* Use less space on larger screens */
+            width: 600px;   /* Adjust the base width */
+        }
+    }
+
+    /* Media query for screens wider than 1024px (desktops and up) */
+    @media (min-width: 1024px) {
+        .modal-content {
+            max-width: 60%; /* Further reduce the width for larger screens */
+            width: 700px;   /* Adjust the base width for desktops */
+        }
+    }
+
+    /* Media query for screens wider than 1440px (large desktops) */
+    @media (min-width: 1440px) {
+        .modal-content {
+            max-width: 50%; /* Reduce width further for large desktops */
+            width: 800px;   /* Increase the base width for large screens */
+        }
+    }
     /* Modal Overlay */
     .modal-overlay {
         background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */

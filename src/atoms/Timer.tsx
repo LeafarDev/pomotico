@@ -23,14 +23,23 @@ export const timerData = atomWithStorage(
 );
 
 export const lastUpdatedTime = atomWithStorage("lastUpdatedTime", -1);
+export const lastEndedNotified = atomWithStorage(
+  "lastEndedNotified",
+  -1,
+  undefined,
+  {
+    getOnInit: true,
+  },
+);
 
 export const sprintConfigData = atomWithStorage<ConfigDataType>("sprintForm", {
   sprintTime: { minutes: 25, seconds: 0 },
-  restTime: { minutes: 15, seconds: 0 },
-  sprintGoal: 4,
+  restTime: { minutes: 5, seconds: 0 },
+  longBreakTime: { hours: 0, minutes: 35, seconds: 0 },
+  qtySprintForLongBreak: 4,
   allowTextNotifications: false,
-  allowSoundNotifications: true,
-} as ConfigDataType);
+  allowSoundNotifications: false,
+});
 
 export const sprintHistory = atomWithStorage<TimerStatusType[]>(
   "sprintHistory",

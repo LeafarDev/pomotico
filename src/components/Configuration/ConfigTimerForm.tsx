@@ -34,7 +34,7 @@ const ConfigTimerForm = (): ReactElement => {
     >
       <h2>Configurações</h2>
       <FormWrapper>
-        <form id="sprint-form" onSubmit={handleSubmit(onSubmit)}>
+        <form id="sprint-form" onSubmit={(e) => e.preventDefault()}>
           <InputGroup>
             <label>Tempo por sprint (Min:Sec)</label>
             <div style={{ display: "flex", gap: "8px" }}>
@@ -43,7 +43,7 @@ const ConfigTimerForm = (): ReactElement => {
                   required: true,
                 })}
                 type="text"
-                placeholder="Min"
+                placeholder="Minutos"
                 data-tooltip-id="config-tooltip"
                 data-tooltip-content={errors.sprintTime?.minutes?.message}
                 className={errors.sprintTime?.minutes ? "error" : ""}
@@ -53,7 +53,7 @@ const ConfigTimerForm = (): ReactElement => {
                   required: true,
                 })}
                 type="text"
-                placeholder="Sec"
+                placeholder="Segundos"
                 data-tooltip-id="config-tooltip"
                 data-tooltip-content={errors.sprintTime?.seconds?.message}
                 className={errors.sprintTime?.seconds ? "error" : ""}
@@ -61,14 +61,14 @@ const ConfigTimerForm = (): ReactElement => {
             </div>
           </InputGroup>
           <InputGroup>
-            <label>Tempo de descanso (Min:Sec)</label>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <label>Tempo de descanso (Min:Seg)</label>
+            <div>
               <input
                 {...registerWithMask("restTime.minutes", ["99"], {
                   required: true,
                 })}
                 type="text"
-                placeholder="Min"
+                placeholder="Minutos"
                 data-tooltip-id="config-tooltip"
                 data-tooltip-content={errors.restTime?.minutes?.message}
                 className={errors.restTime?.minutes ? "error" : ""}
@@ -78,7 +78,7 @@ const ConfigTimerForm = (): ReactElement => {
                   required: true,
                 })}
                 type="text"
-                placeholder="Sec"
+                placeholder="Segundos"
                 data-tooltip-id="config-tooltip"
                 data-tooltip-content={errors.restTime?.seconds?.message}
                 className={errors.restTime?.seconds ? "error" : ""}
@@ -86,18 +86,54 @@ const ConfigTimerForm = (): ReactElement => {
             </div>
           </InputGroup>
           <InputGroup>
-            <label>Meta de sprint por sessão</label>
+            <label>Tempo de pausa longa (Hor:Min:Seg)</label>
+            <div>
+              <input
+                {...registerWithMask("longBreakTime.hours", ["99"], {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Horas"
+                data-tooltip-id="config-tooltip"
+                data-tooltip-content={errors.longBreakTime?.hours?.message}
+                className={errors.longBreakTime?.hours ? "error" : ""}
+              />
+              <input
+                {...registerWithMask("longBreakTime.minutes", ["99"], {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Minutos"
+                data-tooltip-id="config-tooltip"
+                data-tooltip-content={errors.longBreakTime?.minutes?.message}
+                className={errors.longBreakTime?.minutes ? "error" : ""}
+              />
+              <input
+                {...registerWithMask("longBreakTime.seconds", ["99", "9"], {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Segundos"
+                data-tooltip-id="config-tooltip"
+                data-tooltip-content={errors.longBreakTime?.seconds?.message}
+                className={errors.longBreakTime?.seconds ? "error" : ""}
+              />
+            </div>
+          </InputGroup>
+          <InputGroup>
+            <label>Quande de sprint antes da pausa longa</label>
             <input
-              {...registerWithMask("sprintGoal", ["99"], {
+              {...registerWithMask("qtySprintForLongBreak", ["99"], {
                 required: true,
               })}
               type="text"
-              placeholder="Quantity"
+              placeholder="Quantia"
               data-tooltip-id="config-tooltip"
-              data-tooltip-content={errors.sprintGoal?.message}
-              className={errors.sprintGoal ? "error" : ""}
+              data-tooltip-content={errors.qtySprintForLongBreak?.message}
+              className={errors.qtySprintForLongBreak ? "error" : ""}
             />
           </InputGroup>
+
           <InputGroup>
             <AuthorizeNotificationLabel>
               <input
@@ -119,23 +155,25 @@ const ConfigTimerForm = (): ReactElement => {
               Autorizar avisos sonoros
             </AuthorizeNotificationLabel>
           </InputGroup>
-          <div
-            style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}
-          >
-            <ButtonConfigModal
-              type="button"
-              onClick={() => closeModal()}
-              className="cancel"
-            >
-              Cancelar
-            </ButtonConfigModal>
-            <ButtonConfigModal type="submit" className="save">
-              Salvar
-            </ButtonConfigModal>
-          </div>
+          <ReactTooltip id="config-tooltip" variant="error" place="top" />
         </form>
-        <ReactTooltip id="config-tooltip" variant="error" place="top" />
       </FormWrapper>
+      <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+        <ButtonConfigModal
+          type="button"
+          onClick={() => closeModal()}
+          className="cancel"
+        >
+          Cancelar
+        </ButtonConfigModal>
+        <ButtonConfigModal
+          type="button"
+          onClick={handleSubmit(onSubmit)}
+          className="save"
+        >
+          Salvar
+        </ButtonConfigModal>
+      </div>
     </Modal>
   );
 };

@@ -89,14 +89,13 @@ const dotAnimation = keyframes`
     }
 `;
 
-export const StatusText = styled.div<{ $isFocusing: boolean }>`
+export const StatusText = styled.div<{ $statusText: string }>`
   font-size: 18px;
   font-weight: bold;
   color: #dfd8d8;
-
+  ${(props): string => `--status-text: "${props.$statusText}";`}
   &::after {
-    content: "${(props): "Focando" | "Descansando" =>
-      props.$isFocusing ? "Focando" : "Descansando"}";
+    content: var(--status-text);
     animation: ${dotAnimation} 1.5s infinite;
   }
 `;

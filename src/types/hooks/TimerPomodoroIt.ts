@@ -6,5 +6,7 @@ export interface TimerPomodoroIt {
   reset: () => void;
   skip: () => void;
   startButtonText: string;
+  statusDescriptionText: string;
+  statusGif: string;
   iframeRef: MutableRefObject<HTMLIFrameElement | null>;
 }

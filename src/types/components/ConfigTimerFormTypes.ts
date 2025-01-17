@@ -7,7 +7,12 @@ export type ConfigDataType = {
     minutes: number;
     seconds: number;
   };
-  sprintGoal: number;
+  longBreakTime: {
+    hours: number;
+    minutes: number;
+    seconds: number;
+  };
+  qtySprintForLongBreak: number;
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
 };
@@ -21,7 +26,12 @@ export type ConfigDataToFormType = {
     minutes: string;
     seconds: string;
   };
-  sprintGoal: string;
+  longBreakTime: {
+    hours: string;
+    minutes: string;
+    seconds: string;
+  };
+  qtySprintForLongBreak: string;
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
 };
