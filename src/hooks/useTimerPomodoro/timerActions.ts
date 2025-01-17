@@ -24,6 +24,15 @@ export const useTimerActions = (
     setLastUpdated,
   } = states;
 
+  const {
+    skipWorker,
+    onTimeWorkerMessage,
+    startWorker,
+    resetWorker,
+    pauseWorker,
+    resumeWorker,
+  } = useTimeWorkerActions;
+
   const getNextMode = (mode: TimerFocusMode): TimerFocusMode => {
     const { Focusing, Resting, LongBreak } = TimerFocusMode;
     const { qtySprintForLongBreak } = configData;
@@ -50,7 +59,7 @@ export const useTimerActions = (
               .filter((item) => item.mode === Resting);
 
             const qtyRestingPartials = partialHistories.length + 1;
-            if (qtyRestingPartials === qtySprintForLongBreak) {
+            if (qtyRestingPartials >= qtySprintForLongBreak) {
               return LongBreak;
             }
           }
@@ -107,15 +116,6 @@ export const useTimerActions = (
       mode: nextMode,
     };
   };
-
-  const {
-    skipWorker,
-    onTimeWorkerMessage,
-    startWorker,
-    resetWorker,
-    pauseWorker,
-    resumeWorker,
-  } = useTimeWorkerActions;
 
   onTimeWorkerMessage((e: TimerEventDetailIt) => {
     const { action, value, lastUpdated } = e;
