@@ -60,28 +60,7 @@ export const useTimerActions = (
     return Focusing;
   };
 
-  const getNextRemainingTime = (nextMode: TimerFocusMode): number => {
-    const { Focusing, Resting } = TimerFocusMode;
-
-    if (nextMode === Focusing) {
-      return toMilliseconds(
-        configData.sprintTime.minutes,
-        configData.sprintTime.seconds,
-      );
-    } else if (nextMode === Resting) {
-      return toMilliseconds(
-        configData.restTime.minutes,
-        configData.restTime.seconds,
-      );
-    }
-
-    return toMilliseconds(
-      configData.longBreakTime.minutes,
-      configData.longBreakTime.seconds,
-    );
-  };
-
-  const getCurrentOriginalRemainingTime = (mode: TimerFocusMode) => {
+  const getOriginalRemainingTime = (mode: TimerFocusMode) => {
     const { Resting, LongBreak } = TimerFocusMode;
 
     switch (mode) {
@@ -109,7 +88,7 @@ export const useTimerActions = (
       { ...timerState, endTime: Date.now(), skipped },
     ];
     const nextMode = getNextMode(timerState.mode);
-    const remainingTime = getNextRemainingTime(nextMode);
+    const remainingTime = getOriginalRemainingTime(nextMode);
     setHistory(updatedHistory);
 
     const nextTimer = {
@@ -187,7 +166,7 @@ export const useTimerActions = (
   };
 
   const reset = (): void => {
-    const remainingTime = getCurrentOriginalRemainingTime(timerState.mode);
+    const remainingTime = getOriginalRemainingTime(timerState.mode);
 
     const resetTimerState = {
       ...timerState,
@@ -209,7 +188,7 @@ export const useTimerActions = (
   const checkTimerAlreadyStarted = (): boolean => {
     const { mode: currentMode } = timerState;
 
-    const originalRemainingTime = getCurrentOriginalRemainingTime(currentMode);
+    const originalRemainingTime = getOriginalRemainingTime(currentMode);
 
     return <boolean>(
       (timerState.startTime && timerState.remainingTime < originalRemainingTime)
