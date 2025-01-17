@@ -54,10 +54,6 @@ export const useTimerStatusDescriptions = (
       return waitingGif;
     }
 
-    if (timerState.isRunning) {
-      return "Aguardando";
-    }
-
     if (mode === Focusing) {
       return workingGif;
     } else if (mode === Resting) {
