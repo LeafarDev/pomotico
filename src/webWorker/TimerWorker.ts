@@ -2,7 +2,7 @@ import { IndexedDB } from "../indexedDB/indexedDB.ts";
 import { TimerStatusType } from "../types/components/TimerTypes.ts";
 import { TimerEventDetailIt } from "../types/webWorker/TimerEventDetailIt.ts";
 
-let intervalId: NodeJS.Timeout | undefined;
+let intervalId: number | undefined;
 const { saveToDB, loadFromDB } = IndexedDB();
 
 const calculateElapsedTime = (lastUpdated: number): number => {
@@ -17,7 +17,7 @@ const calculateRemainingTimer = (
   return remainingTime - elapsedTime;
 };
 
-const updateTimer = (timerState: TimerStatusType): NodeJS.Timeout => {
+const updateTimer = (timerState: TimerStatusType): number => {
   return setInterval(async () => {
     const lastUpdated = Number(await loadFromDB("lastUpdatedWorker"));
     const elapsedTime = calculateElapsedTime(lastUpdated);
