@@ -38,29 +38,54 @@ export interface SCPlaybackMethods {
   SKIP: string;
 }
 
-interface SCWidgetLoadOptions {
-  params?: Record<string, never>;
-  callback?: () => void;
+export interface SoundCloudTrack {
+  id: number;
+  title: string;
+  duration: number;
+  permalink_url: string;
+  // Add more properties as needed from SoundCloud's track data.
 }
-
 export interface SCWidget {
-  (
-    element: string | HTMLElement,
-    track?: string,
-    options?: Record<string, any>,/* eslint-disable-line */
-  ): any;/* eslint-disable-line */
+  (element: string | HTMLElement): SCWidget;
+
   Events: SCWidgetEvents;
-  bridge: SCBridge;
-  API: SCAPIMethods;
-  Playback: SCPlaybackMethods;
-  current: SCWidget;
   bind(event: string, callback: () => void): void;
   unbind(event: string): void;
-  load(track: string, options?: SCWidgetLoadOptions): void;
-  play(): Promise<void>;
-  getVolume(): Promise<number>;
-  getDuration(): Promise<number>;
-  getPosition(): Promise<number>;
-  getCurrentSoundIndex(): Promise<number>;
-  isPaused(): Promise<boolean>;
+
+  load(
+    track: string,
+    options?: {
+      auto_play?: boolean;
+      buying?: boolean;
+      liking?: boolean;
+      download?: boolean;
+      sharing?: boolean;
+      show_artwork?: boolean;
+      show_comments?: boolean;
+      show_playcount?: boolean;
+      show_user?: boolean;
+      single_active?: boolean;
+      visual?: boolean;
+      start_track?: number;
+    },
+  ): void;
+
+  play(): void;
+  pause(): void;
+
+  getVolume(callback: (volume: number) => void): void;
+  setVolume(volume: number): void;
+
+  getDuration(callback: (duration: number) => void): void;
+  getPosition(callback: (position: number) => void): void;
+  seekTo(milliseconds: number): void;
+
+  getCurrentSound(callback: (sound: SoundCloudTrack) => void): void;
+  getCurrentSoundIndex(callback: (index: number) => void): void;
+
+  isPaused(callback: (paused: boolean) => void): void;
+  toggle(): void;
+
+  next(): void;
+  previous(): void;
 }

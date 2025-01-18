@@ -66,4 +66,6 @@ export const sprintFormSchema = z.object({
     }),
   allowSoundNotifications: z.boolean(),
   allowTextNotifications: z.boolean(),
+  allowAmbienceSound: z.boolean(),
+  ambienceSoundTrack: z.string(),
 });

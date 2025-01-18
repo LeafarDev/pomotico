@@ -1,3 +1,10 @@
+export type tracksValues =
+  | "city17"
+  | "forestNight"
+  | "rain"
+  | "library"
+  | "ravenholm";
+
 export type ConfigDataType = {
   sprintTime: {
     minutes: number;
@@ -15,8 +22,12 @@ export type ConfigDataType = {
   qtySprintForLongBreak: number;
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
+  allowAmbienceSound: boolean;
+  ambienceSoundTrack: tracksValues;
 };
-
+export interface TestAmbienceSoundButtonProps {
+  $inactive: boolean;
+}
 export type ConfigDataToFormType = {
   sprintTime: {
     minutes: string;
@@ -34,4 +45,14 @@ export type ConfigDataToFormType = {
   qtySprintForLongBreak: string;
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
+  allowAmbienceSound: boolean;
+  ambienceSoundTrack: tracksValues;
 };
+
+export type AmbienceSoundOptions = {
+  label: string;
+  value: string;
+  url: string;
+  author: string;
+  description: string;
+}[];

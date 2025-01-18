@@ -5,6 +5,7 @@ import { useForm, RegisterOptions } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useHookFormMask } from "use-mask-input";
 import {
+  ambianceOptions,
   isConfigModalOpen,
   sprintConfigData,
   timerData,
@@ -16,30 +17,41 @@ import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
 import {
   ConfigDataToFormType,
   ConfigDataType,
+  tracksValues,
 } from "../../types/components/ConfigTimerFormTypes.ts";
 import { TimerFocusMode } from "../../types/components/TimerTypes.ts";
 import { UseSprintFormLogicIt } from "../../types/hooks/UseSprintFormLogicIt.ts";
 import { toMilliseconds } from "../../utils/timeUtils.ts";
-const Toast = Swal.mixin({
-  toast: true,
-  position: "top-end",
-  showConfirmButton: false,
-  timer: 2000,
-  didOpen: (toast) => {
-    toast.onmouseenter = Swal.stopTimer;
-    toast.onmouseleave = Swal.resumeTimer;
-  },
-});
+import { useBackgroundSound } from "../useBackgroundSound";
 
 export const useSprintFormLogic = (): UseSprintFormLogicIt => {
+  const { backgroundPlay, backgroundPause } = useBackgroundSound();
+  const [isTestAmbienceButtonDisabled, setIsTestAmbienceButtonDisabled] =
+    useState(false);
+  const [testAmbienceButtonText, setTestAmbienceButtonText] = useState("Ouvir");
+  const [ambianceSoundOptions] = useAtom(ambianceOptions);
   const [formData, setFormData] = useAtom(sprintConfigData);
   const [timer, setTimer] = useAtom(timerData);
+  const [ambienceSoundChecked, setAmbienceSoundChecked] = useState(false);
+  const [selectedSound, setSelectedSound] = useState<tracksValues>("city17");
+
   const [isModalOpen, setIsModalOpen] = useAtom(isConfigModalOpen);
   const { sw } = useServiceWorker();
   const {
     isPermissionGranted: canSendTextNotification,
     requestPermission: requestTextPermission,
   } = TextNotificationManager(sw);
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2000,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
 
   const [textNotificationsAllowed, setTextNotificationsAllowed] =
     useState(false);
@@ -60,6 +72,42 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
       return;
     }
     setTextNotificationsAllowed(false);
+  };
+
+  const disableTestButton = (): void => {
+    setIsTestAmbienceButtonDisabled(true);
+    setTestAmbienceButtonText("Tocando");
+    backgroundPlay(selectedSound, true);
+  };
+
+  const enableTestButton = (): void => {
+    setIsTestAmbienceButtonDisabled(false);
+    setTestAmbienceButtonText("Ouvir");
+    backgroundPause();
+  };
+
+  const handleButtonTestSound = (): void => {
+    disableTestButton();
+
+    setTimeout(() => {
+      enableTestButton();
+    }, 35000);
+  };
+
+  const handleSoundChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    enableTestButton();
+    const songValue = e.target.value as tracksValues;
+    setSelectedSound(songValue);
+  };
+
+  const handleAllowAmbienceSoundChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    if (e.target.checked) {
+      setAmbienceSoundChecked(true);
+    } else {
+      setAmbienceSoundChecked(false);
+    }
   };
 
   const handleSoundNotificationChange = async (
@@ -100,6 +148,10 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
 
   const resetForm = () => {
     if (formData) {
+      if (formData.ambienceSoundTrack) {
+        setSelectedSound(formData.ambienceSoundTrack);
+      }
+
       reset({
         ...formData,
         qtySprintForLongBreak: String(formData.qtySprintForLongBreak),
@@ -117,6 +169,7 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
           seconds: String(formData.longBreakTime.seconds),
         },
       });
+      setAmbienceSoundChecked(formData.allowAmbienceSound);
     }
   };
 
@@ -143,6 +196,8 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
       },
       allowSoundNotifications: data.allowSoundNotifications,
       allowTextNotifications: data.allowTextNotifications,
+      allowAmbienceSound: data.allowAmbienceSound,
+      ambienceSoundTrack: data.ambienceSoundTrack,
     };
 
     setFormData(formattedData);
@@ -185,5 +240,13 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
     handleTextNotificationChange,
     textNotificationsAllowed,
     handleSoundNotificationChange,
+    ambianceSoundOptions,
+    handleTestSound: handleButtonTestSound,
+    handleSoundChange,
+    handleAllowAmbienceSoundChange,
+    ambienceSoundChecked,
+    selectedSound,
+    isTestAmbienceButtonDisabled,
+    testAmbienceButtonText,
   };
 };

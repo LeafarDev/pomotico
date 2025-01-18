@@ -6,6 +6,7 @@ import {
   ButtonConfigModal,
   FormWrapper,
   InputGroup,
+  TestAmbienceSoundButton,
 } from "./sprintFormStyle.ts";
 import { useSprintFormLogic } from "../../hooks/useConfigTimerForm";
 
@@ -21,6 +22,14 @@ const ConfigTimerForm = (): ReactElement => {
     onSubmit,
     isModalOpen,
     textNotificationsAllowed,
+    ambianceSoundOptions,
+    handleAllowAmbienceSoundChange,
+    handleSoundChange,
+    ambienceSoundChecked,
+    handleTestSound,
+    selectedSound,
+    isTestAmbienceButtonDisabled,
+    testAmbienceButtonText,
   } = useSprintFormLogic();
 
   return (
@@ -154,6 +163,67 @@ const ConfigTimerForm = (): ReactElement => {
               />
               Autorizar avisos sonoros
             </AuthorizeNotificationLabel>
+          </InputGroup>
+          <InputGroup>
+            <AuthorizeNotificationLabel>
+              <input
+                type="checkbox"
+                {...register("allowAmbienceSound")}
+                onChange={handleAllowAmbienceSoundChange}
+              />
+              Permitir som ambiente
+            </AuthorizeNotificationLabel>
+          </InputGroup>
+
+          <InputGroup>
+            <label>Som ambiente</label>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <select
+                {...register("ambienceSoundTrack")}
+                onChange={handleSoundChange}
+                disabled={!ambienceSoundChecked}
+                value={selectedSound}
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  backgroundColor: ambienceSoundChecked ? "#444" : "#888",
+                  color: "#fff",
+                }}
+              >
+                {ambianceSoundOptions.map((sound) => (
+                  <option key={sound.value} value={sound.value}>
+                    {sound.label}
+                  </option>
+                ))}
+              </select>
+              <TestAmbienceSoundButton
+                onClick={handleTestSound}
+                $inactive={
+                  !(!ambienceSoundChecked || isTestAmbienceButtonDisabled)
+                }
+              >
+                {testAmbienceButtonText}
+              </TestAmbienceSoundButton>
+            </div>
+          </InputGroup>
+          <InputGroup>
+            <p style={{ fontSize: "1rem", color: "#ccc" }}>
+              Autor:{" "}
+              <a
+                href={
+                  ambianceSoundOptions.find(
+                    (item) => item.value === selectedSound,
+                  )?.url
+                }
+                target={"_blank"}
+              >
+                {
+                  ambianceSoundOptions.find(
+                    (item) => item.value === selectedSound,
+                  )?.author
+                }
+              </a>
+            </p>
           </InputGroup>
           <ReactTooltip id="config-tooltip" variant="error" place="top" />
         </form>

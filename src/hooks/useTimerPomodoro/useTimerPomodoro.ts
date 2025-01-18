@@ -1,4 +1,3 @@
-import { useBackgroundSound } from "./backgroundSound.ts";
 import { useTimerActions } from "./timerActions.ts";
 import { useTimerNotifications } from "./timerNotifications.ts";
 import { useTimerState } from "./timerState.ts";
@@ -6,6 +5,7 @@ import { useTimerStatusDescriptions } from "./timerStatusDescriptions.ts";
 import { useTimerTab } from "./timerTab.ts";
 import { useTimerWorker } from "./useTimerWorker.ts";
 import { TimerPomodoroIt } from "../../types/hooks/TimerPomodoroIt.ts";
+import { useBackgroundSound } from "../useBackgroundSound";
 
 export const useTimerPomodoro = (
   sw: ServiceWorkerRegistration | null,

@@ -12,7 +12,6 @@ import { timerData } from "../../atoms/Timer.tsx";
 import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
 import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
 import { formatTime } from "../../utils/timeUtils.ts";
-import { BackgroundSound } from "../BackgroundSound/BackgroundSound.tsx";
 
 export const Timer = (): ReactElement => {
   const { sw } = useServiceWorker();
@@ -24,7 +23,6 @@ export const Timer = (): ReactElement => {
     startButtonText,
     statusDescriptionText,
     statusGif,
-    iframeRef,
   } = useTimerPomodoro(sw);
   const [{ remainingTime, isRunning }] = useAtom(timerData);
 
@@ -42,7 +40,6 @@ export const Timer = (): ReactElement => {
         <button onClick={skip}>Pular</button>
         <button onClick={isRunning ? pause : start}>{startButtonText}</button>
       </ButtonsController>
-      <BackgroundSound iframeRef={iframeRef} />
     </TimerContent>
   );
 };

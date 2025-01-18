@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import { TestAmbienceSoundButtonProps } from "../../types/components/ConfigTimerFormTypes.ts";
 
 export const InputGroup = styled.div`
   margin-bottom: 15px;
@@ -31,6 +32,22 @@ export const FormWrapper = styled.div`
   flex-direction: column;
   gap: 15px;
   overflow: scroll;
+`;
+
+export const TestAmbienceSoundButton = styled.div<TestAmbienceSoundButtonProps>`
+  padding: 8px 16px;
+  background-color: ${(props) => (props.$inactive ? "#1c8591" : "#6c6e73")};
+  color: #fff;
+  border-radius: 4px;
+  border: none;
+  cursor: ${(props) => (props.$inactive ? "pointer" : "not-allowed")};
+  opacity: ${(props) => (props.$inactive ? 1 : 0.5)};
+  text-align: center;
+  user-select: none;
+
+  &:hover {
+    background-color: ${(props) => (props.$inactive ? "#16737b" : "#6c6e73")};
+  }
 `;
 
 export const ButtonConfigModal = styled.button`

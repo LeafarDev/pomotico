@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { tracksValues } from "../../types/components/ConfigTimerFormTypes.ts";
 import {
   TimerFocusMode,
   TimerStatusType,
@@ -12,7 +13,7 @@ import { toMilliseconds } from "../../utils/timeUtils";
 export const useTimerActions = (
   states: UseTimerStateIt,
   useTimeWorkerActions: UseTimerWorkerIt,
-  backgroundPlay: () => void,
+  backgroundPlay: (songValue: tracksValues, testMode: boolean) => void,
 ): UseTimerActionsIt => {
   const {
     timerState,
@@ -69,7 +70,7 @@ export const useTimerActions = (
     return Focusing;
   };
 
-  const getOriginalRemainingTime = (mode: TimerFocusMode) => {
+  const getOriginalRemainingTime = (mode: TimerFocusMode): number => {
     const { Resting, LongBreak } = TimerFocusMode;
 
     switch (mode) {
@@ -154,7 +155,7 @@ export const useTimerActions = (
       setTimerState(newTimerState);
       startWorker(newTimerState);
     }
-    backgroundPlay();
+    backgroundPlay(configData.ambienceSoundTrack, false);
   };
 
   const pause = (): void => {

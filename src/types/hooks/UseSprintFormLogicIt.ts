@@ -4,7 +4,11 @@ import {
   UseFormHandleSubmit,
 } from "react-hook-form";
 import { useHookFormMask } from "use-mask-input";
-import { ConfigDataToFormType } from "../components/ConfigTimerFormTypes.ts";
+import {
+  AmbienceSoundOptions,
+  ConfigDataToFormType,
+  tracksValues,
+} from "../components/ConfigTimerFormTypes.ts";
 
 export interface UseSprintFormLogicIt {
   closeModal: () => void;
@@ -21,4 +25,14 @@ export interface UseSprintFormLogicIt {
   register: UseFormRegister<ConfigDataToFormType>;
   registerWithMask: ReturnType<typeof useHookFormMask>;
   textNotificationsAllowed: boolean;
+  ambianceSoundOptions: AmbienceSoundOptions;
+  handleTestSound: () => void;
+  handleSoundChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleAllowAmbienceSoundChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
+  ambienceSoundChecked: boolean;
+  selectedSound: tracksValues;
+  isTestAmbienceButtonDisabled: boolean;
+  testAmbienceButtonText: string;
 }

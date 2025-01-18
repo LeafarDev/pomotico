@@ -1,14 +1,17 @@
-import { FC } from "react";
+import { ReactElement } from "react";
 import { HiddenIframe } from "./backgroundSoundStyle.ts";
+import { useBackgroundSound } from "../../hooks/useBackgroundSound";
 
-interface BackgroundSoundProps {
-  iframeRef: React.RefObject<HTMLIFrameElement>;
-}
-
-export const BackgroundSound: FC<BackgroundSoundProps> = ({ iframeRef }) => (
-  <HiddenIframe
-    ref={iframeRef}
-    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/researcher_turtle/half-life-2-city-17-ambience&auto_play=false"
-    title="SoundCloud Player"
-  />
-);
+export const BackgroundSound = (): ReactElement => {
+  const { iframeRef, currentTrackUrl } = useBackgroundSound();
+  return (
+    <HiddenIframe
+      ref={iframeRef}
+      src={
+        `https://w.soundcloud.com/player/?url=${encodeURIComponent(currentTrackUrl)}` ||
+        "about:blank"
+      } // Fallback URL to avoid invalid iframe state
+      title="SoundCloud Player"
+    />
+  );
+};
