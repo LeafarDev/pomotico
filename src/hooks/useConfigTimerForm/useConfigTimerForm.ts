@@ -170,6 +170,7 @@ export const useSprintFormLogic = (): UseSprintFormLogicIt => {
         },
       });
       setAmbienceSoundChecked(formData.allowAmbienceSound);
+      enableTestButton();
     }
   };
 
