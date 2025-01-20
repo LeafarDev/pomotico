@@ -85,8 +85,18 @@ self.onmessage = async (e: MessageEvent<TimerEventDetailIt>): Promise<void> => {
     }
   }
 
-  if (action == "pause" || action == "reset" || action == "skip") {
+  if (action == "pause" || action == "skip") {
     stopUpdateTimer();
+  }
+
+  if (action === "reset") {
+    stopUpdateTimer();
+    await saveToDB("lastUpdatedWorker", Date.now());
+    startUpdateTimer(value as TimerStatusType);
+  }
+
+  if (action === "terminateTimer") {
+    await saveToDB("lastUpdatedWorker", -1);
   }
 };
 

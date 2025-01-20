@@ -2,16 +2,18 @@ import { ReactElement } from "react";
 import Modal from "react-modal";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import {
-  AuthorizeNotificationLabel,
+  CheckBoxLabel,
   ButtonConfigModal,
+  CreateProfileButton,
   FormWrapper,
   InputGroup,
   TestAmbienceSoundButton,
-} from "./sprintFormStyle.ts";
-import { useSprintFormLogic } from "../../hooks/useConfigTimerForm";
+} from "./profileFormStyle.ts";
+import { useSprintFormLogic } from "../../hooks/useProfileForm";
 
-const ConfigTimerForm = (): ReactElement => {
+const ConfigProfileForm = (): ReactElement => {
   const {
+    formMode,
     register,
     registerWithMask,
     handleTextNotificationChange,
@@ -30,6 +32,10 @@ const ConfigTimerForm = (): ReactElement => {
     selectedSound,
     isTestAmbienceButtonDisabled,
     testAmbienceButtonText,
+    currentEditingProfile,
+    profiles,
+    handleCreateNewProfile,
+    handleSelectProfileOnChange,
   } = useSprintFormLogic();
 
   return (
@@ -44,6 +50,68 @@ const ConfigTimerForm = (): ReactElement => {
       <h2>Configurações</h2>
       <FormWrapper>
         <form id="sprint-form" onSubmit={(e) => e.preventDefault()}>
+          {formMode === "updating" && currentEditingProfile ? (
+            <InputGroup>
+              <label>Perfil</label>
+              <div
+                style={{ display: "flex", gap: "10px", alignItems: "center" }}
+              >
+                <select
+                  value={currentEditingProfile.id}
+                  onChange={handleSelectProfileOnChange}
+                  style={{
+                    padding: "8px",
+                    borderRadius: "4px",
+                    backgroundColor: "#444",
+                    color: "#fff",
+                  }}
+                >
+                  {profiles.map((profile) => (
+                    <option key={profile.id} value={profile.id}>
+                      {profile.title}{" "}
+                      {currentEditingProfile.id === profile.id
+                        ? "(current)"
+                        : ""}
+                    </option>
+                  ))}
+                </select>
+                <CreateProfileButton onClick={handleCreateNewProfile}>
+                  Criar Novo Perfil
+                </CreateProfileButton>
+              </div>
+            </InputGroup>
+          ) : (
+            <></>
+          )}
+          <InputGroup>
+            <label htmlFor="title">Título do Perfil</label>
+            <input
+              {...register("title", {
+                required: "O título é obrigatório.",
+              })}
+              id="title"
+              type="text"
+              placeholder="Insira o título do perfil"
+              className={errors.title ? "error" : ""}
+              data-tooltip-id="config-tooltip"
+              data-tooltip-content={errors.title?.message}
+            />
+          </InputGroup>
+
+          <InputGroup>
+            <CheckBoxLabel>
+              <input
+                disabled={
+                  (profiles.length === 1 && formMode === "updating") ||
+                  (formMode === "updating" && currentEditingProfile?.active)
+                }
+                {...register("active")}
+                id="active"
+                type="checkbox"
+              />
+              Ativar perfil
+            </CheckBoxLabel>
+          </InputGroup>
           <InputGroup>
             <label>Tempo por sprint (Min:Sec)</label>
             <div style={{ display: "flex", gap: "8px" }}>
@@ -144,7 +212,7 @@ const ConfigTimerForm = (): ReactElement => {
           </InputGroup>
 
           <InputGroup>
-            <AuthorizeNotificationLabel>
+            <CheckBoxLabel>
               <input
                 type="checkbox"
                 {...register("allowTextNotifications")}
@@ -152,27 +220,27 @@ const ConfigTimerForm = (): ReactElement => {
                 onChange={handleTextNotificationChange}
               />
               Autorizar notificações
-            </AuthorizeNotificationLabel>
+            </CheckBoxLabel>
           </InputGroup>
           <InputGroup>
-            <AuthorizeNotificationLabel>
+            <CheckBoxLabel>
               <input
                 type="checkbox"
                 {...register("allowSoundNotifications")}
                 onChange={handleSoundNotificationChange}
               />
               Autorizar avisos sonoros
-            </AuthorizeNotificationLabel>
+            </CheckBoxLabel>
           </InputGroup>
           <InputGroup>
-            <AuthorizeNotificationLabel>
+            <CheckBoxLabel>
               <input
                 type="checkbox"
                 {...register("allowAmbienceSound")}
                 onChange={handleAllowAmbienceSoundChange}
               />
               Permitir som ambiente
-            </AuthorizeNotificationLabel>
+            </CheckBoxLabel>
           </InputGroup>
 
           <InputGroup>
@@ -248,4 +316,4 @@ const ConfigTimerForm = (): ReactElement => {
   );
 };
 
-export default ConfigTimerForm;
+export default ConfigProfileForm;

@@ -7,7 +7,7 @@ export interface UseTimerWorkerIt {
   terminateTimeWorker: () => void;
   startWorker: (timerState: TimerStatusType) => void;
   resetWorker: (timerState: TimerStatusType) => void;
-  pauseWorker: (timerState: TimerStatusType) => void;
+  pauseWorker: () => void;
   skipWorker: (timerState: TimerStatusType) => void;
   resumeWorker: (timerState: TimerStatusType) => void;
 }

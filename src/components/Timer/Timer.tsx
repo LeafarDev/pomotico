@@ -8,7 +8,7 @@ import {
   TimerContent,
   TimeRemaining,
 } from "./timerStyle.ts";
-import { timerData } from "../../atoms/Timer.tsx";
+import { activeProfileTimerData } from "../../atoms/Timer.tsx";
 import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
 import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
 import { formatTime } from "../../utils/timeUtils.ts";
@@ -24,7 +24,7 @@ export const Timer = (): ReactElement => {
     statusDescriptionText,
     statusGif,
   } = useTimerPomodoro(sw);
-  const [{ remainingTime, isRunning }] = useAtom(timerData);
+  const [{ remainingTime, isRunning }] = useAtom(activeProfileTimerData);
 
   return (
     <TimerContent>

@@ -6,6 +6,7 @@ export interface TimerEventDetailIt {
     | "skip"
     | "finished"
     | "updateTimer"
+    | "terminateTimer"
     | "resume";
   type: "background" | "ui";
   value?: unknown;

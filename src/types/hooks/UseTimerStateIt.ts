@@ -1,4 +1,4 @@
-import { ConfigDataType } from "../components/ConfigTimerFormTypes.ts";
+import { ProfileType } from "../components/ConfigTimerFormTypes.ts";
 import { TimerStatusType } from "../components/TimerTypes.ts";
 
 export interface UseTimerStateIt {
@@ -12,7 +12,7 @@ export interface UseTimerStateIt {
   setHistory: (history: TimerStatusType[]) => void;
   pausedAt: number | undefined;
   setPausedAt: (pausedAt: number) => void;
-  configData: ConfigDataType;
+  currentActiveProfile: ProfileType;
   lastUpdated: number;
   setLastUpdated: (lastUpdated: number) => void;
 }

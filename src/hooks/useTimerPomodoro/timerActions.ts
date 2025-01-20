@@ -15,13 +15,14 @@ export const useTimerActions = (
   useTimeWorkerActions: UseTimerWorkerIt,
   backgroundPlay: (songValue: tracksValues, testMode: boolean) => void,
 ): UseTimerActionsIt => {
+
   const {
     timerState,
     setTimerState,
     histories,
     setHistory,
     setPausedAt,
-    configData,
+    currentActiveProfile,
     setLastUpdated,
   } = states;
 
@@ -36,7 +37,7 @@ export const useTimerActions = (
 
   const getNextMode = (mode: TimerFocusMode): TimerFocusMode => {
     const { Focusing, Resting, LongBreak } = TimerFocusMode;
-    const { qtySprintForLongBreak } = configData;
+    const { qtySprintForLongBreak } = currentActiveProfile;
     const historiesLength = histories.length;
 
     if (mode === Focusing) {
@@ -76,18 +77,18 @@ export const useTimerActions = (
     switch (mode) {
       case Resting:
         return toMilliseconds(
-          configData.restTime.minutes,
-          configData.restTime.seconds,
+          currentActiveProfile.restTime.minutes,
+          currentActiveProfile.restTime.seconds,
         );
       case LongBreak:
         return toMilliseconds(
-          configData.longBreakTime.minutes,
-          configData.longBreakTime.seconds,
+          currentActiveProfile.longBreakTime.minutes,
+          currentActiveProfile.longBreakTime.seconds,
         );
       default:
         return toMilliseconds(
-          configData.sprintTime.minutes,
-          configData.sprintTime.seconds,
+          currentActiveProfile.sprintTime.minutes,
+          currentActiveProfile.sprintTime.seconds,
         );
     }
   };
@@ -101,7 +102,7 @@ export const useTimerActions = (
     const remainingTime = getOriginalRemainingTime(nextMode);
     setHistory(updatedHistory);
 
-    const nextTimer = {
+    const nextTimer: TimerStatusType = {
       remainingTime,
       isRunning: false,
       skipped: false,
@@ -110,12 +111,7 @@ export const useTimerActions = (
 
     setTimerState(nextTimer);
     setLastUpdated(Date.now());
-    return {
-      remainingTime,
-      isRunning: false,
-      skipped: false,
-      mode: nextMode,
-    };
+    return nextTimer;
   };
 
   onTimeWorkerMessage((e: TimerEventDetailIt) => {
@@ -155,14 +151,13 @@ export const useTimerActions = (
       setTimerState(newTimerState);
       startWorker(newTimerState);
     }
-    backgroundPlay(configData.ambienceSoundTrack, false);
+    backgroundPlay(currentActiveProfile.ambienceSoundTrack, false);
   };
 
   const pause = (): void => {
     setPausedAt(Date.now());
     setLastUpdated(Date.now());
-    const pausedTimer = { ...timerState, isRunning: false };
-    pauseWorker(pausedTimer);
+    pauseWorker();
     setTimerState({ ...timerState, isRunning: false });
   };
 

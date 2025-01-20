@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { useState, useEffect } from "react";
-import { ambianceOptions, sprintConfigData } from "../../atoms/Timer.tsx";
+import { activeProfile, ambianceOptions } from "../../atoms/Timer.tsx";
 import { tracksValues } from "../../types/components/ConfigTimerFormTypes.ts";
 import { SCWidget } from "../../types/global/SCWidgetTypes.ts";
 import { UseBackgroundSoundIt } from "../../types/hooks/UseBackgroundSoundIt.ts";
@@ -10,7 +10,7 @@ const widgetRefSingleton = { current: null as SCWidget | null };
 
 export const useBackgroundSound = (): UseBackgroundSoundIt => {
   const [ambianceSoundOptions] = useAtom(ambianceOptions);
-  const [{ allowAmbienceSound }] = useAtom(sprintConfigData);
+  const [{ allowAmbienceSound }] = useAtom(activeProfile);
   const [currentTrackUrl, setCurrentTrackUrl] = useState(
     "https://soundcloud.com/mariuszpierog/frogs-sounds-forest-sounds-at-night-owls-crickets-for-sleep-study-relaxing-n018",
   );

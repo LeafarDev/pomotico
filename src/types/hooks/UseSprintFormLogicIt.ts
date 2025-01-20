@@ -1,3 +1,4 @@
+import React from "react";
 import {
   FieldErrors,
   UseFormRegister,
@@ -6,23 +7,25 @@ import {
 import { useHookFormMask } from "use-mask-input";
 import {
   AmbienceSoundOptions,
-  ConfigDataToFormType,
+  currentActiveProfileToFormType,
+  ProfileType,
   tracksValues,
 } from "../components/ConfigTimerFormTypes.ts";
 
 export interface UseSprintFormLogicIt {
+  formMode: "creating" | "updating";
   closeModal: () => void;
-  errors: FieldErrors<ConfigDataToFormType>;
+  errors: FieldErrors<currentActiveProfileToFormType>;
   handleSoundNotificationChange: (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => Promise<void>;
-  handleSubmit: UseFormHandleSubmit<ConfigDataToFormType>;
+  handleSubmit: UseFormHandleSubmit<currentActiveProfileToFormType>;
   handleTextNotificationChange: (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => void;
   isModalOpen: boolean;
-  onSubmit: (data: ConfigDataToFormType) => void;
-  register: UseFormRegister<ConfigDataToFormType>;
+  onSubmit: (data: currentActiveProfileToFormType) => void;
+  register: UseFormRegister<currentActiveProfileToFormType>;
   registerWithMask: ReturnType<typeof useHookFormMask>;
   textNotificationsAllowed: boolean;
   ambianceSoundOptions: AmbienceSoundOptions;
@@ -35,4 +38,10 @@ export interface UseSprintFormLogicIt {
   selectedSound: tracksValues;
   isTestAmbienceButtonDisabled: boolean;
   testAmbienceButtonText: string;
+  currentEditingProfile: ProfileType | undefined;
+  profiles: ProfileType[];
+  handleCreateNewProfile: () => void;
+  handleSelectProfileOnChange: (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => void;
 }

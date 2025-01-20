@@ -68,4 +68,9 @@ export const sprintFormSchema = z.object({
   allowTextNotifications: z.boolean(),
   allowAmbienceSound: z.boolean(),
   ambienceSoundTrack: z.string(),
+  title: z
+    .string()
+    .min(1, { message: "O título é obrigatório." })
+    .max(50, { message: "O título deve ter no máximo 50 caracteres." }),
+  active: z.boolean(),
 });

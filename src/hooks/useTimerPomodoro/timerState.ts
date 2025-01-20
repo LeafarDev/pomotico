@@ -2,19 +2,19 @@ import { useAtom } from "jotai";
 import {
   lastUpdatedTime,
   pausedTime,
-  sprintConfigData,
+  activeProfile,
   sprintHistory,
-  timerData,
+  activeProfileTimerData,
 } from "../../atoms/Timer";
-
 import { UseTimerStateIt } from "../../types/hooks/UseTimerStateIt.ts";
 
 export const useTimerState = (): UseTimerStateIt => {
-  const [timerState, setTimerState] = useAtom(timerData);
+  const [timerState, setTimerState] = useAtom(activeProfileTimerData);
   const [history, setHistory] = useAtom(sprintHistory);
   const [pausedAt, setPausedAt] = useAtom(pausedTime);
-  const [configData] = useAtom(sprintConfigData);
+  const [currentActiveProfile] = useAtom(activeProfile);
   const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedTime);
+
   return {
     timerState,
     setTimerState,
@@ -22,7 +22,7 @@ export const useTimerState = (): UseTimerStateIt => {
     setHistory,
     pausedAt,
     setPausedAt,
-    configData,
+    currentActiveProfile,
     lastUpdated,
     setLastUpdated,
   };

@@ -7,13 +7,13 @@ import startFocusWav from "../assets/songs/startFocus.wav";
 import startRestWav from "../assets/songs/startRest.wav";
 import wakeUpFocusAlertWav from "../assets/songs/wakeupfocustalert.wav";
 import wakeUpRestAlertWav from "../assets/songs/wakeuprestalert.wav";
-import { sprintConfigData } from "../atoms/Timer.tsx";
+import { activeProfile } from "../atoms/Timer.tsx";
 import { SoundNotificationManagerIt } from "../types/notifications/SoundNotificationManagerIt.ts";
 
 export const SoundNotificationManager = (
   allowNotificationForce: boolean = false,
 ): SoundNotificationManagerIt => {
-  const [{ allowSoundNotifications }] = useAtom(sprintConfigData);
+  const [{ allowSoundNotifications }] = useAtom(activeProfile);
 
   const play = async (path: string): Promise<void> => {
     if (allowNotificationForce || allowSoundNotifications) {

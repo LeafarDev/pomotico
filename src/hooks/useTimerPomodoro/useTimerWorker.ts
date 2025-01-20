@@ -18,6 +18,12 @@ export const useTimerWorker = (): UseTimerWorkerIt => {
   };
 
   const terminateTimeWorker = (): void => {
+    const now = Date.now();
+    sendTimeWorkerMessage({
+      action: "terminate",
+      type: "background",
+      lastUpdated: now,
+    });
     worker.terminate();
   };
 
@@ -39,12 +45,11 @@ export const useTimerWorker = (): UseTimerWorkerIt => {
     });
   };
 
-  const pauseWorker = (timerState: TimerStatusType): void => {
+  const pauseWorker = (): void => {
     const now = Date.now();
     sendTimeWorkerMessage({
       action: "pause",
       type: "background",
-      value: timerState,
       lastUpdated: now,
     });
   };

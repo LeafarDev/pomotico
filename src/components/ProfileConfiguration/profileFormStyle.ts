@@ -34,6 +34,22 @@ export const FormWrapper = styled.div`
   overflow: scroll;
 `;
 
+export const CreateProfileButton = styled.div`
+  padding: 8px 16px;
+  background-color: rgba(241, 14, 222, 0.75);
+  color: #fff;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  text-align: center;
+  user-select: none;
+
+  &:hover {
+    background-color: rgba(216, 113, 208, 0.75);
+  }
+`;
+
 export const TestAmbienceSoundButton = styled.div<TestAmbienceSoundButtonProps>`
   padding: 8px 16px;
   background-color: ${(props) => (props.$inactive ? "#1c8591" : "#6c6e73")};
@@ -89,7 +105,7 @@ export const ButtonConfigModal = styled.button`
   }
 `;
 
-export const AuthorizeNotificationLabel = styled.p`
+export const CheckBoxLabel = styled.p`
   display: flex;
   flex-direction: row;
   gap: 8px;

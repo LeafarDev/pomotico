@@ -1,6 +1,6 @@
 import { useAtom } from "jotai/index";
 import notificationIcon from "../assets/notification/notification-icon.png";
-import { sprintConfigData } from "../atoms/Timer.tsx";
+import { activeProfile } from "../atoms/Timer.tsx";
 
 import { TextNotificationManagerIt } from "../types/notifications/TextNotificationManagerIt.ts";
 
@@ -19,7 +19,7 @@ export const TextNotificationManager = (
     }
   };
 
-  const [{ allowTextNotifications }] = useAtom(sprintConfigData);
+  const [{ allowTextNotifications }] = useAtom(activeProfile);
 
   const isPermissionGranted = (): boolean => {
     return Notification.permission === "granted";

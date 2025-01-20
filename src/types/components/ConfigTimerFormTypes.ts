@@ -1,3 +1,5 @@
+import { TimerStatusType } from "./TimerTypes.ts";
+
 export type tracksValues =
   | "city17"
   | "forestNight"
@@ -5,7 +7,10 @@ export type tracksValues =
   | "library"
   | "ravenholm";
 
-export type ConfigDataType = {
+export type ProfileType = {
+  id: string;
+  title: string;
+  active: boolean;
   sprintTime: {
     minutes: number;
     seconds: number;
@@ -23,12 +28,15 @@ export type ConfigDataType = {
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
   allowAmbienceSound: boolean;
+  timer: TimerStatusType;
   ambienceSoundTrack: tracksValues;
 };
-export interface TestAmbienceSoundButtonProps {
-  $inactive: boolean;
-}
-export type ConfigDataToFormType = {
+
+export type currentActiveProfileToFormType = Omit<
+  ProfileType,
+  "sprintTime" | "restTime" | "longBreakTime" | "qtySprintForLongBreak"
+> & {
+  qtySprintForLongBreak: string;
   sprintTime: {
     minutes: string;
     seconds: string;
@@ -42,13 +50,11 @@ export type ConfigDataToFormType = {
     minutes: string;
     seconds: string;
   };
-  qtySprintForLongBreak: string;
-  allowTextNotifications: boolean;
-  allowSoundNotifications: boolean;
-  allowAmbienceSound: boolean;
-  ambienceSoundTrack: tracksValues;
 };
 
+export interface TestAmbienceSoundButtonProps {
+  $inactive: boolean;
+}
 export type AmbienceSoundOptions = {
   label: string;
   value: string;

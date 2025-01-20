@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import {
   AmbienceSoundOptions,
-  ConfigDataType,
+  ProfileType,
 } from "../types/components/ConfigTimerFormTypes.ts";
 import {
   TimerFocusMode,
@@ -10,20 +10,6 @@ import {
 } from "../types/components/TimerTypes.ts";
 
 export const isConfigModalOpen = atom(false);
-
-export const timerData = atomWithStorage(
-  "timerData",
-  {
-    mode: TimerFocusMode.Focusing,
-    skipped: false,
-    remainingTime: 25 * 60 * 1000,
-    isRunning: false,
-  } as TimerStatusType,
-  undefined,
-  {
-    getOnInit: true,
-  },
-);
 
 export const lastUpdatedTime = atomWithStorage("lastUpdatedTime", -1);
 export const lastEndedNotified = atomWithStorage(
@@ -35,7 +21,16 @@ export const lastEndedNotified = atomWithStorage(
   },
 );
 
-export const sprintConfigData = atomWithStorage<ConfigDataType>("sprintForm", {
+export const defaultTimer: TimerStatusType = {
+  mode: TimerFocusMode.Focusing,
+  skipped: false,
+  remainingTime: 25 * 60 * 1000,
+  isRunning: false,
+};
+
+export const defaultProfile: ProfileType = {
+  id: "cbd69f8f-1ace-4c77-997e-df96ad695f08",
+  title: "Perfil Padrão",
   sprintTime: { minutes: 25, seconds: 0 },
   restTime: { minutes: 5, seconds: 0 },
   longBreakTime: { hours: 0, minutes: 35, seconds: 0 },
@@ -44,11 +39,30 @@ export const sprintConfigData = atomWithStorage<ConfigDataType>("sprintForm", {
   allowSoundNotifications: false,
   allowAmbienceSound: true,
   ambienceSoundTrack: "city17",
-});
+  timer: defaultTimer,
+  active: true,
+};
+
+export const activeProfileTimerData = atomWithStorage<TimerStatusType>(
+  "timerData",
+  defaultTimer,
+  undefined,
+  {
+    getOnInit: true,
+  },
+);
+
+export const activeProfile = atomWithStorage<ProfileType>(
+  "activeProfile",
+  defaultProfile,
+);
+export const profileTypes = atomWithStorage<ProfileType[]>("profileTypes", [
+  defaultProfile,
+]);
 
 export const sprintHistory = atomWithStorage<TimerStatusType[]>(
   "sprintHistory",
-  [] as TimerStatusType[],
+  [],
 );
 
 export const pausedTime = atomWithStorage(
