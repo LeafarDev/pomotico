@@ -1,11 +1,12 @@
 import { TimerStatusType } from "./TimerTypes.ts";
 
-export type tracksValues =
-  | "city17"
-  | "forestNight"
-  | "rain"
-  | "library"
-  | "ravenholm";
+export enum AmbienceTracks {
+  City17 = "city17",
+  ForestNight = "forestNight",
+  Rain = "rain",
+  Library = "library",
+  Ravenholm = "ravenholm",
+}
 
 export type ProfileType = {
   id: string;
@@ -29,7 +30,7 @@ export type ProfileType = {
   allowSoundNotifications: boolean;
   allowAmbienceSound: boolean;
   timer: TimerStatusType;
-  ambienceSoundTrack: tracksValues;
+  ambienceSoundTrack: AmbienceTracks;
 };
 
 export type currentActiveProfileToFormType = Omit<

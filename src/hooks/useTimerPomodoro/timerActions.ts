@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { tracksValues } from "../../types/components/ConfigTimerFormTypes.ts";
+import { AmbienceTracks } from "../../types/components/ConfigTimerFormTypes.ts";
 import {
   TimerFocusMode,
   TimerStatusType,
@@ -13,9 +13,8 @@ import { toMilliseconds } from "../../utils/timeUtils";
 export const useTimerActions = (
   states: UseTimerStateIt,
   useTimeWorkerActions: UseTimerWorkerIt,
-  backgroundPlay: (songValue: tracksValues, testMode: boolean) => void,
+  backgroundPlay: (songValue: AmbienceTracks, testMode: boolean) => void,
 ): UseTimerActionsIt => {
-
   const {
     timerState,
     setTimerState,

@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import {
   AmbienceSoundOptions,
+  AmbienceTracks,
   ProfileType,
 } from "../types/components/ConfigTimerFormTypes.ts";
 import {
@@ -38,7 +39,7 @@ export const defaultProfile: ProfileType = {
   allowTextNotifications: false,
   allowSoundNotifications: false,
   allowAmbienceSound: true,
-  ambienceSoundTrack: "city17",
+  ambienceSoundTrack: AmbienceTracks.City17,
   timer: defaultTimer,
   active: true,
 };

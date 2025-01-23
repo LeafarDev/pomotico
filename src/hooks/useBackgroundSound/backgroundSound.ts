@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useState, useEffect } from "react";
 import { activeProfile, ambianceOptions } from "../../atoms/Timer.tsx";
-import { tracksValues } from "../../types/components/ConfigTimerFormTypes.ts";
+import { AmbienceTracks } from "../../types/components/ConfigTimerFormTypes.ts";
 import { SCWidget } from "../../types/global/SCWidgetTypes.ts";
 import { UseBackgroundSoundIt } from "../../types/hooks/UseBackgroundSoundIt.ts";
 
@@ -16,7 +16,7 @@ export const useBackgroundSound = (): UseBackgroundSoundIt => {
   );
 
   const backgroundPlay = (
-    songValue: tracksValues = "city17",
+    songValue: AmbienceTracks = AmbienceTracks.City17,
     testMode: boolean = false,
   ): void => {
     if (testMode || allowAmbienceSound) {

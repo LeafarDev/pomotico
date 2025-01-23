@@ -9,34 +9,38 @@ import {
   InputGroup,
   TestAmbienceSoundButton,
 } from "./profileFormStyle.ts";
-import { useSprintFormLogic } from "../../hooks/useProfileForm";
+import { useProfileForm } from "../../hooks/useProfileForm/useProfileForm.ts";
 
 const ConfigProfileForm = (): ReactElement => {
   const {
-    formMode,
+    states,
     register,
-    registerWithMask,
-    handleTextNotificationChange,
-    handleSoundNotificationChange,
-    handleSubmit,
-    errors,
     closeModal,
-    onSubmit,
-    isModalOpen,
-    textNotificationsAllowed,
-    ambianceSoundOptions,
+    handleSelectProfileOnChange,
+    handleCreateNewProfile,
+    registerWithMask,
+    errors,
+    handleTextNotificationChange,
+    handleSubmit,
+    handleSoundNotificationChange,
+    handleButtonTestSound,
     handleAllowAmbienceSoundChange,
     handleSoundChange,
+    onSubmit,
+  } = useProfileForm();
+
+  const {
+    isModalOpen,
+    currentEditingProfile,
+    formMode,
+    profiles,
+    textNotificationsAllowed,
+    ambianceSoundOptions,
     ambienceSoundChecked,
-    handleTestSound,
     selectedSound,
     isTestAmbienceButtonDisabled,
     testAmbienceButtonText,
-    currentEditingProfile,
-    profiles,
-    handleCreateNewProfile,
-    handleSelectProfileOnChange,
-  } = useSprintFormLogic();
+  } = states;
 
   return (
     <Modal
@@ -265,7 +269,7 @@ const ConfigProfileForm = (): ReactElement => {
                 ))}
               </select>
               <TestAmbienceSoundButton
-                onClick={handleTestSound}
+                onClick={handleButtonTestSound}
                 $inactive={
                   !(!ambienceSoundChecked || isTestAmbienceButtonDisabled)
                 }

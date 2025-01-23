@@ -6,7 +6,6 @@ import { useTimerTab } from "./timerTab.ts";
 import { useTimerWorker } from "./useTimerWorker.ts";
 import { TimerPomodoroIt } from "../../types/hooks/TimerPomodoroIt.ts";
 import { useBackgroundSound } from "../useBackgroundSound";
-
 export const useTimerPomodoro = (
   sw: ServiceWorkerRegistration | null,
 ): TimerPomodoroIt => {

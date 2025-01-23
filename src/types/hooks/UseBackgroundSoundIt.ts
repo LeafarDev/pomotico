@@ -1,8 +1,8 @@
 import { MutableRefObject } from "react";
-import { tracksValues } from "../components/ConfigTimerFormTypes.ts";
+import { AmbienceTracks } from "../components/ConfigTimerFormTypes.ts";
 
 export interface UseBackgroundSoundIt {
-  backgroundPlay: (songValue: tracksValues, testMode: boolean) => void;
+  backgroundPlay: (songValue: AmbienceTracks, testMode: boolean) => void;
   backgroundPause: () => void;
   iframeRef: MutableRefObject<HTMLIFrameElement | null>;
   currentTrackUrl: string;
