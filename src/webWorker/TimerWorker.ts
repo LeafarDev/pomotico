@@ -17,7 +17,7 @@ const calculateRemainingTimer = (
   return remainingTime - elapsedTime;
 };
 
-const updateTimer = (timerState: TimerStatusType): number => {
+const updateTimer = (timerState: TimerStatusType) => {
   return setInterval(async () => {
     const lastUpdated = Number(await loadFromDB("lastUpdatedWorker"));
     const elapsedTime = calculateElapsedTime(lastUpdated);
@@ -61,7 +61,7 @@ const stopUpdateTimer = (): void => {
   intervalId = undefined;
 };
 const startUpdateTimer = (timerState: TimerStatusType): void => {
-  intervalId = updateTimer(timerState);
+  intervalId = updateTimer(timerState) as unknown as number;
 };
 
 self.onmessage = async (e: MessageEvent<TimerEventDetailIt>): Promise<void> => {
