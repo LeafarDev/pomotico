@@ -33,7 +33,7 @@ export type ProfileType = {
   ambienceSoundTrack: AmbienceTracks;
 };
 
-export type currentActiveProfileToFormType = Omit<
+export type ProfileToFormDataType = Omit<
   ProfileType,
   "sprintTime" | "restTime" | "longBreakTime" | "qtySprintForLongBreak"
 > & {

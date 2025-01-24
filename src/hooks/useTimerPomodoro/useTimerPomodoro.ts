@@ -11,7 +11,7 @@ export const useTimerPomodoro = (
 ): TimerPomodoroIt => {
   const states = useTimerState();
 
-  const { timerState, histories, pausedAt } = states;
+  const { currentTimerState, histories, pausedAt } = states;
 
   const useTimeWorkerActions = useTimerWorker();
 
@@ -20,14 +20,17 @@ export const useTimerPomodoro = (
   const actions = useTimerActions(states, useTimeWorkerActions, backgroundPlay);
 
   const { getStartButtonText, getStatusText, getStatusGif } =
-    useTimerStatusDescriptions(states, actions.checkAlreadyStarted);
+    useTimerStatusDescriptions(
+      states,
+      actions.checkCurrentProfileAlreadyStarted,
+    );
 
   useTimerNotifications(
     sw,
-    timerState,
+    currentTimerState,
     histories,
     pausedAt,
-    actions.checkAlreadyStarted,
+    actions.checkCurrentProfileAlreadyStarted,
   );
   useTimerTab(states);
 

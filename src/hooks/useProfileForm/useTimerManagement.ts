@@ -1,9 +1,9 @@
 import { ProfileType } from "../../types/components/ConfigTimerFormTypes.ts";
-import { TimerFocusMode } from "../../types/components/TimerTypes.ts";
 import { UseFormStateIt } from "../../types/hooks/useProfileForm/UseFormStateIt.ts";
 import { UseTimerManagementIt } from "../../types/hooks/useProfileForm/UseTimerManagementIt.ts";
-import { toMilliseconds } from "../../utils/timeUtils.ts";
 import { useTimerWorker } from "../useTimerPomodoro";
+import { checkTimerAlreadyStarted } from "../useTimerPomodoro/checkTimerAlreadyStarted.ts";
+import { getOriginalRemainingTime } from "../useTimerPomodoro/getOriginalRemainingTime.ts";
 
 export const useTimerManagement = ({
   states,
@@ -22,7 +22,7 @@ export const useTimerManagement = ({
     currentEditingProfile,
   } = states;
 
-  const updateProfilesList = (formattedProfile: ProfileType) => {
+  const setProfilesInactive = (formattedProfile: ProfileType) => {
     if (formMode === "creating") {
       if (formattedProfile.active) {
         return profiles
@@ -44,50 +44,67 @@ export const useTimerManagement = ({
     }
   };
 
-  const swapProfile = (profile: ProfileType, formattedData: ProfileType) => {
-    const profiles = updateProfilesList(formattedData);
+  const swapProfile = (profile: ProfileType) => {
+    const profiles = setProfilesInactive(profile);
     if (!profile.active) {
       setProfiles(profiles);
       return;
     }
+
     useTimeWorkerActions.pauseWorker();
+    setActiveTimer({ ...activeTimer, isRunning: false });
+
     if (currentActiveProfile.id !== profile.id) {
-      const updatedProfiles = profiles.map((item) => {
-        if (item.id === currentActiveProfile.id) {
-          return {
-            ...item,
-            timer: activeTimer,
-          };
-        }
-        return item;
+      const alreadyStarted = checkTimerAlreadyStarted({
+        profile,
+        timerStatus: profile.timer,
       });
-      setActiveTimer(profile.timer);
-      setCurrentActiveProfile(profile);
-      setProfiles(updatedProfiles);
-      useTimeWorkerActions.resetWorker(profile.timer);
-    } else if (currentActiveProfile.id === profile.id) {
-      const mode =
-        activeTimer.mode === TimerFocusMode.Focusing
-          ? "sprintTime"
-          : "restTime";
 
-      if (
-        currentActiveProfile[mode].minutes !== profile[mode].minutes ||
-        currentActiveProfile[mode].seconds !== profile[mode].seconds
-      ) {
-        const remainingTime = toMilliseconds(
-          parseInt(String(profile[mode].minutes), 10),
-          parseInt(String(profile[mode].seconds), 10),
-        );
-
-        const updatedTimer = { ...activeTimer, remainingTime };
+      if (alreadyStarted) {
+        const updatedTimer = { ...profile.timer, isRunning: false };
+        setActiveTimer(updatedTimer);
+        useTimeWorkerActions.resetWorker(updatedTimer);
+      } else {
+        const remainingTime = getOriginalRemainingTime({
+          profile,
+          mode: profile.timer.mode,
+        });
+        const updatedTimer = {
+          ...profile.timer,
+          remainingTime,
+          isRunning: false,
+        };
         setActiveTimer(updatedTimer);
         useTimeWorkerActions.resetWorker(updatedTimer);
       }
 
       setCurrentActiveProfile(profile);
-      setProfiles(profiles);
+    } else if (currentActiveProfile.id === profile.id) {
+      const alreadyStarted = checkTimerAlreadyStarted({
+        profile,
+        timerStatus: activeTimer,
+      });
+
+      if (!alreadyStarted) {
+        const remainingTime = getOriginalRemainingTime({
+          profile,
+          mode: activeTimer.mode,
+        });
+
+        const updatedTimer = {
+          ...activeTimer,
+          remainingTime,
+        };
+
+        setActiveTimer(updatedTimer);
+      } else if (activeTimer.isRunning) {
+        useTimeWorkerActions.resetWorker(activeTimer);
+        useTimeWorkerActions.startWorker(activeTimer);
+      }
+
+      setCurrentActiveProfile(profile);
     }
+    setProfiles(profiles);
   };
 
   return {

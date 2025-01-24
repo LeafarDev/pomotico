@@ -6,7 +6,7 @@ import {
 } from "react-hook-form";
 import { useHookFormMask } from "use-mask-input";
 import { UseFormStateIt } from "./UseFormStateIt.ts";
-import { currentActiveProfileToFormType } from "../../components/ConfigTimerFormTypes.ts";
+import { ProfileToFormDataType } from "../../components/ConfigTimerFormTypes.ts";
 
 export interface UseProfileFormIt {
   states: UseFormStateIt;
@@ -18,10 +18,10 @@ export interface UseProfileFormIt {
   ) => Promise<void>;
   registerWithMask: ReturnType<typeof useHookFormMask>;
   closeModal: () => void;
-  handleSubmit: UseFormHandleSubmit<currentActiveProfileToFormType>;
-  register: UseFormRegister<currentActiveProfileToFormType>;
-  errors: FieldErrors<currentActiveProfileToFormType>;
-  onSubmit: (data: currentActiveProfileToFormType) => void;
+  handleSubmit: UseFormHandleSubmit<ProfileToFormDataType>;
+  register: UseFormRegister<ProfileToFormDataType>;
+  errors: FieldErrors<ProfileToFormDataType>;
+  onSubmit: (data: ProfileToFormDataType) => void;
   handleCreateNewProfile: () => void;
   handleSelectProfileOnChange: (
     e: React.ChangeEvent<HTMLSelectElement>,

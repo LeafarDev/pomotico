@@ -1,10 +1,14 @@
 import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
-import { defaultProfile, defaultTimer } from "../../atoms/Timer.tsx";
+import { defaultProfile } from "../../atoms/Timer.tsx";
 import {
-  currentActiveProfileToFormType,
+  ProfileToFormDataType,
   ProfileType,
 } from "../../types/components/ConfigTimerFormTypes.ts";
+import {
+  TimerFocusMode,
+  TimerStatusType,
+} from "../../types/components/TimerTypes.ts";
 import {
   UseFormHandlerProps,
   UseFormHandlersIt,
@@ -54,22 +58,33 @@ export const useFormHandlers = ({
         seconds: String(defaultProfile.restTime.seconds),
       },
       longBreakTime: {
-        hours: String(defaultProfile.longBreakTime.hours),
+        hours: String(defaultProfile.longBreakTime.hours || 0),
         minutes: String(defaultProfile.longBreakTime.minutes),
         seconds: String(defaultProfile.longBreakTime.seconds),
       },
     });
   };
-  const onSubmit = (dataFromForm: currentActiveProfileToFormType) => {
+
+  const getTimer = (dataFromForm: ProfileToFormDataType): TimerStatusType => {
+    if (formMode === "updating") {
+      return currentEditingProfile?.timer as TimerStatusType;
+    }
+
+    return {
+      mode: TimerFocusMode.Focusing,
+      skipped: false,
+      remainingTime: Number(dataFromForm.sprintTime.minutes) * 60 * 1000,
+      isRunning: false,
+    };
+  };
+
+  const onSubmit = (dataFromForm: ProfileToFormDataType) => {
     const id =
       formMode === "updating" && currentEditingProfile
         ? currentEditingProfile.id
         : uuidv4();
 
-    const newTimer =
-      formMode === "updating" && currentEditingProfile
-        ? currentEditingProfile.timer
-        : defaultTimer;
+    const newTimer = getTimer(dataFromForm);
 
     const formattedData: ProfileType = {
       id,
@@ -93,7 +108,7 @@ export const useFormHandlers = ({
       ambienceSoundTrack: dataFromForm.ambienceSoundTrack,
     };
 
-    swapProfile(formattedData, formattedData);
+    swapProfile(formattedData);
     closeModal();
 
     Toast.fire({

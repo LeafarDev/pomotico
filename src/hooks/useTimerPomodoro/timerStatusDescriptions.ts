@@ -11,13 +11,13 @@ export const useTimerStatusDescriptions = (
   states: UseTimerStateIt,
   checkAlreadyStarted: () => boolean,
 ): TimerTextDescriptionStatusIt => {
-  const { timerState } = states;
+  const { currentTimerState } = states;
 
   const getStartButtonText = (): string => {
-    const mode = timerState.mode;
+    const mode = currentTimerState.mode;
     const { Focusing, Resting } = TimerFocusMode;
 
-    if (timerState.isRunning) return "Pausar";
+    if (currentTimerState.isRunning) return "Pausar";
     if (mode === Focusing) {
       return checkAlreadyStarted() ? "Retomar Sprint" : "Iniciar Foco";
     } else if (mode === Resting) {
@@ -30,10 +30,10 @@ export const useTimerStatusDescriptions = (
   };
 
   const getStatusText = (): string => {
-    const mode = timerState.mode;
+    const mode = currentTimerState.mode;
     const { Focusing, Resting } = TimerFocusMode;
 
-    if (!timerState.isRunning) {
+    if (!currentTimerState.isRunning) {
       return "Aguardando";
     }
 
@@ -47,10 +47,10 @@ export const useTimerStatusDescriptions = (
   };
 
   const getStatusGif = (): string => {
-    const mode = timerState.mode;
+    const mode = currentTimerState.mode;
     const { Focusing, Resting } = TimerFocusMode;
 
-    if (!timerState.isRunning) {
+    if (!currentTimerState.isRunning) {
       return waitingGif;
     }
 

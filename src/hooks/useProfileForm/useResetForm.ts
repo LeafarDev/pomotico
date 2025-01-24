@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { UseFormReset } from "react-hook-form";
 import {
-  currentActiveProfileToFormType,
+  ProfileToFormDataType,
   ProfileType,
 } from "../../types/components/ConfigTimerFormTypes.ts";
 import { UseFormStateIt } from "../../types/hooks/useProfileForm/UseFormStateIt.ts";
@@ -12,7 +12,7 @@ export const UseResetForm = ({
   enableAmbienceTestButton,
 }: {
   states: UseFormStateIt;
-  reset: UseFormReset<currentActiveProfileToFormType>;
+  reset: UseFormReset<ProfileToFormDataType>;
   enableAmbienceTestButton: () => void;
 }) => {
   const {
@@ -22,13 +22,14 @@ export const UseResetForm = ({
     setFormMode,
     setAmbienceSoundChecked,
     currentActiveProfile,
+    isModalOpen,
   } = states;
 
   useEffect(() => {
     if (currentActiveProfile) {
       resetForm(currentActiveProfile.id);
     }
-  }, [currentActiveProfile]);
+  }, [isModalOpen]);
 
   const resetForm = (id: string | undefined = undefined) => {
     let profile: ProfileType = currentActiveProfile;
@@ -45,6 +46,7 @@ export const UseResetForm = ({
       if (profile.ambienceSoundTrack) {
         setSelectedSound(profile.ambienceSoundTrack);
       }
+
       reset({
         ...profile,
         sprintTime: {
@@ -67,7 +69,7 @@ export const UseResetForm = ({
     }
   };
 
-  const resetFormByProfileData = (data: currentActiveProfileToFormType) => {
+  const resetFormByProfileData = (data: ProfileToFormDataType) => {
     reset(data);
   };
 

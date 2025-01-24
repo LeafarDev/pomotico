@@ -2,12 +2,8 @@ import { ProfileType } from "../components/ConfigTimerFormTypes.ts";
 import { TimerStatusType } from "../components/TimerTypes.ts";
 
 export interface UseTimerStateIt {
-  timerState: TimerStatusType;
-  setTimerState: (
-    timerStatus:
-      | TimerStatusType
-      | ((prevState: TimerStatusType) => TimerStatusType),
-  ) => void;
+  currentTimerState: TimerStatusType;
+  setCurrentTimerState: (timerStatus: TimerStatusType) => void;
   histories: TimerStatusType[];
   setHistory: (history: TimerStatusType[]) => void;
   pausedAt: number | undefined;

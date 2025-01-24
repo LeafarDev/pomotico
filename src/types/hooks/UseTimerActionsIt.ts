@@ -3,5 +3,5 @@ export interface UseTimerActionsIt {
   reset: () => void;
   skip: () => void;
   start: () => void;
-  checkAlreadyStarted: () => boolean;
+  checkCurrentProfileAlreadyStarted: () => boolean;
 }

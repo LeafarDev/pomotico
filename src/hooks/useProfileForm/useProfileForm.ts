@@ -12,7 +12,7 @@ import { sprintFormSchema } from "../../components/ProfileConfiguration/configPr
 import { SoundNotificationManager } from "../../notifications/soundNotificationManager.ts";
 import { TextNotificationManager } from "../../notifications/textNotificationManager.ts";
 import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
-import { currentActiveProfileToFormType } from "../../types/components/ConfigTimerFormTypes.ts";
+import { ProfileToFormDataType } from "../../types/components/ConfigTimerFormTypes.ts";
 import { UseProfileFormIt } from "../../types/hooks/useProfileForm/UseSprintFormLogicIt.ts";
 import { useBackgroundSound } from "../useBackgroundSound";
 
@@ -20,13 +20,17 @@ export const useProfileForm = (): UseProfileFormIt => {
   const states = useFormStates();
   const { sw } = useServiceWorker();
   const { backgroundPlay, backgroundPause } = useBackgroundSound();
-  const { notify: soundNotify } = SoundNotificationManager();
+  const { notify: soundNotify } = SoundNotificationManager(true);
+  const {
+    isPermissionGranted: canSendTextNotification,
+    requestPermission: requestTextPermission,
+  } = TextNotificationManager(sw);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<currentActiveProfileToFormType>({
+  } = useForm<ProfileToFormDataType>({
     resolver: zodResolver(sprintFormSchema),
   });
 
@@ -40,10 +44,6 @@ export const useProfileForm = (): UseProfileFormIt => {
     backgroundPlay,
     backgroundPause,
   });
-  const {
-    isPermissionGranted: canSendTextNotification,
-    requestPermission: requestTextPermission,
-  } = TextNotificationManager(sw);
 
   const { resetForm, resetFormByProfileData } = UseResetForm({
     states,
@@ -51,12 +51,16 @@ export const useProfileForm = (): UseProfileFormIt => {
     enableAmbienceTestButton,
   });
 
-  const { closeModal } = UseCloseModal({ states, resetForm });
-
   const registerWithMask = useHookFormMask<
-    currentActiveProfileToFormType,
+    ProfileToFormDataType,
     RegisterOptions
   >(register);
+
+  const { swapProfile } = useTimerManagement({
+    states,
+  });
+
+  const { closeModal } = UseCloseModal({ states, resetForm });
 
   const { handleTextNotificationChange, handleSoundNotificationChange } =
     useNotificationHandlers({
@@ -66,10 +70,6 @@ export const useProfileForm = (): UseProfileFormIt => {
       sw,
       soundNotify,
     });
-
-  const { swapProfile } = useTimerManagement({
-    states,
-  });
 
   const { onSubmit, handleCreateNewProfile, handleSelectProfileOnChange } =
     useFormHandlers({

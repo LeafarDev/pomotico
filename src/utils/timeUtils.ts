@@ -26,11 +26,11 @@ export const parseStringTime = (time: {
   seconds: string;
   hours?: string;
 }) => ({
-  hours: time.hours ? parseInt(String(time.hours), 10) : undefined,
+  hours:
+    time.hours !== undefined ? parseInt(String(time.hours), 10) : undefined,
   minutes: parseInt(String(time.minutes), 10),
   seconds: parseInt(String(time.seconds), 10),
 });
-
 export const differenceInMinutes = (date1: number, date2: number): number => {
   const differenceInMilliseconds = date1 - date2;
 

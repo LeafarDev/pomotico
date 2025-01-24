@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { checkTimerAlreadyStarted } from "./checkTimerAlreadyStarted.ts";
+import { getOriginalRemainingTime } from "./getOriginalRemainingTime.ts";
 import { AmbienceTracks } from "../../types/components/ConfigTimerFormTypes.ts";
 import {
   TimerFocusMode,
@@ -8,7 +10,6 @@ import { UseTimerActionsIt } from "../../types/hooks/UseTimerActionsIt.ts";
 import { UseTimerStateIt } from "../../types/hooks/UseTimerStateIt.ts";
 import { UseTimerWorkerIt } from "../../types/hooks/UseTimerWorkerIt.ts";
 import { TimerEventDetailIt } from "../../types/webWorker/TimerEventDetailIt.ts";
-import { toMilliseconds } from "../../utils/timeUtils";
 
 export const useTimerActions = (
   states: UseTimerStateIt,
@@ -16,8 +17,8 @@ export const useTimerActions = (
   backgroundPlay: (songValue: AmbienceTracks, testMode: boolean) => void,
 ): UseTimerActionsIt => {
   const {
-    timerState,
-    setTimerState,
+    currentTimerState,
+    setCurrentTimerState,
     histories,
     setHistory,
     setPausedAt,
@@ -70,35 +71,16 @@ export const useTimerActions = (
     return Focusing;
   };
 
-  const getOriginalRemainingTime = (mode: TimerFocusMode): number => {
-    const { Resting, LongBreak } = TimerFocusMode;
-
-    switch (mode) {
-      case Resting:
-        return toMilliseconds(
-          currentActiveProfile.restTime.minutes,
-          currentActiveProfile.restTime.seconds,
-        );
-      case LongBreak:
-        return toMilliseconds(
-          currentActiveProfile.longBreakTime.minutes,
-          currentActiveProfile.longBreakTime.seconds,
-        );
-      default:
-        return toMilliseconds(
-          currentActiveProfile.sprintTime.minutes,
-          currentActiveProfile.sprintTime.seconds,
-        );
-    }
-  };
-
   const handleTimerCompletion = (skipped = false): TimerStatusType => {
     const updatedHistory = [
       ...histories,
-      { ...timerState, endTime: Date.now(), skipped },
+      { ...currentTimerState, endTime: Date.now(), skipped },
     ];
-    const nextMode = getNextMode(timerState.mode);
-    const remainingTime = getOriginalRemainingTime(nextMode);
+    const nextMode = getNextMode(currentTimerState.mode);
+    const remainingTime = getOriginalRemainingTime({
+      mode: nextMode,
+      profile: currentActiveProfile,
+    });
     setHistory(updatedHistory);
 
     const nextTimer: TimerStatusType = {
@@ -108,7 +90,7 @@ export const useTimerActions = (
       mode: nextMode,
     };
 
-    setTimerState(nextTimer);
+    setCurrentTimerState(nextTimer);
     setLastUpdated(Date.now());
     return nextTimer;
   };
@@ -123,7 +105,7 @@ export const useTimerActions = (
 
     if (action === "updateTimer") {
       if (value) {
-        setTimerState(timerState);
+        setCurrentTimerState(timerState);
       }
     }
 
@@ -134,20 +116,22 @@ export const useTimerActions = (
 
   const start = (): void => {
     setLastUpdated(Date.now());
-    const alreadyStarted = checkTimerAlreadyStarted();
+
+    const alreadyStarted = checkCurrentProfileAlreadyStarted();
+
     if (!alreadyStarted) {
       const newTimerState = {
-        ...timerState,
+        ...currentTimerState,
         isRunning: true,
         startTime: Date.now(),
       };
 
-      setTimerState(newTimerState);
+      setCurrentTimerState(newTimerState);
 
       startWorker(newTimerState);
     } else {
-      const newTimerState = { ...timerState, isRunning: true };
-      setTimerState(newTimerState);
+      const newTimerState = { ...currentTimerState, isRunning: true };
+      setCurrentTimerState(newTimerState);
       startWorker(newTimerState);
     }
     backgroundPlay(currentActiveProfile.ambienceSoundTrack, false);
@@ -157,19 +141,27 @@ export const useTimerActions = (
     setPausedAt(Date.now());
     setLastUpdated(Date.now());
     pauseWorker();
-    setTimerState({ ...timerState, isRunning: false });
+    setCurrentTimerState({ ...currentTimerState, isRunning: false });
   };
-
+  const checkCurrentProfileAlreadyStarted = () => {
+    return checkTimerAlreadyStarted({
+      timerStatus: currentTimerState,
+      profile: currentActiveProfile,
+    });
+  };
   const reset = (): void => {
-    const remainingTime = getOriginalRemainingTime(timerState.mode);
+    const remainingTime = getOriginalRemainingTime({
+      mode: currentTimerState.mode,
+      profile: currentActiveProfile,
+    });
 
     const resetTimerState = {
-      ...timerState,
+      ...currentTimerState,
       isRunning: false,
       remainingTime,
     };
 
-    setTimerState(resetTimerState);
+    setCurrentTimerState(resetTimerState);
 
     resetWorker(resetTimerState);
     setLastUpdated(Date.now());
@@ -180,20 +172,10 @@ export const useTimerActions = (
     skipWorker(nextTimer);
   };
 
-  const checkTimerAlreadyStarted = (): boolean => {
-    const { mode: currentMode } = timerState;
-
-    const originalRemainingTime = getOriginalRemainingTime(currentMode);
-
-    return <boolean>(
-      (timerState.startTime && timerState.remainingTime < originalRemainingTime)
-    );
-  };
-
   useEffect(() => {
-    if (timerState.isRunning) {
+    if (currentTimerState.isRunning) {
       setLastUpdated(Date.now());
-      resumeWorker(timerState);
+      resumeWorker(currentTimerState);
     }
   }, []);
 
@@ -202,6 +184,6 @@ export const useTimerActions = (
     pause,
     reset,
     skip,
-    checkAlreadyStarted: checkTimerAlreadyStarted,
+    checkCurrentProfileAlreadyStarted,
   };
 };

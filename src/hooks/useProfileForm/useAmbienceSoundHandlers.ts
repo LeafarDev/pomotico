@@ -21,7 +21,6 @@ export const useAmbienceSoundHandlers = ({
   const disableAmbienceTestButton = (): void => {
     setIsTestAmbienceButtonDisabled(true);
     setTestAmbienceButtonText("Tocando");
-    backgroundPlay(selectedSound, true);
   };
 
   const enableAmbienceTestButton = (): void => {
@@ -32,7 +31,7 @@ export const useAmbienceSoundHandlers = ({
 
   const handleButtonTestSound = (): void => {
     disableAmbienceTestButton();
-
+    backgroundPlay(selectedSound, true);
     setTimeout(() => {
       enableAmbienceTestButton();
     }, 35000);
