@@ -77,7 +77,7 @@ export const TextNotificationManager = () => {
           {
             title,
             body,
-            id: new Date().getTime(),
+            id: Math.floor(new Date().getTime() / 1000),
             schedule: { at: new Date(new Date().getTime() + 1000) },
           },
         ],
