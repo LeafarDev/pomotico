@@ -9,13 +9,18 @@ import { useBackgroundSound } from "../useBackgroundSound";
 export const useTimerPomodoro = (): TimerPomodoroIt => {
   const states = useTimerState();
 
-  const { currentTimerState, histories, pausedAt } = states;
+  const { currentActiveProfile, pausedAt } = states;
 
   const useTimeWorkerActions = useTimerWorker();
 
-  const { backgroundPlay } = useBackgroundSound();
+  const { backgroundPlay, isBackgroundPlaying } = useBackgroundSound();
 
-  const actions = useTimerActions(states, useTimeWorkerActions, backgroundPlay);
+  const actions = useTimerActions(
+    states,
+    useTimeWorkerActions,
+    backgroundPlay,
+    isBackgroundPlaying,
+  );
 
   const { getStartButtonText, getStatusText, getStatusGif } =
     useTimerStatusDescriptions(
@@ -24,8 +29,7 @@ export const useTimerPomodoro = (): TimerPomodoroIt => {
     );
 
   useTimerNotifications(
-    currentTimerState,
-    histories,
+    currentActiveProfile,
     pausedAt,
     actions.checkCurrentProfileAlreadyStarted,
   );

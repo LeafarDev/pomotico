@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 import { checkTimerAlreadyStarted } from "./checkTimerAlreadyStarted.ts";
 import { getOriginalRemainingTime } from "./getOriginalRemainingTime.ts";
 import { AmbienceTracks } from "../../types/components/ConfigTimerFormTypes.ts";
@@ -15,14 +16,12 @@ export const useTimerActions = (
   states: UseTimerStateIt,
   useTimeWorkerActions: UseTimerWorkerIt,
   backgroundPlay: (songValue: AmbienceTracks, testMode: boolean) => void,
+  isBackgroundPlaying: () => boolean,
 ): UseTimerActionsIt => {
   const {
-    currentTimerState,
-    setCurrentTimerState,
-    histories,
-    setHistory,
     setPausedAt,
     currentActiveProfile,
+    setCurrentActiveProfile,
     setLastUpdated,
   } = states;
 
@@ -36,52 +35,43 @@ export const useTimerActions = (
   } = useTimeWorkerActions;
 
   const getNextMode = (mode: TimerFocusMode): TimerFocusMode => {
+    const { history, qtySprintForLongBreak } = currentActiveProfile;
     const { Focusing, Resting, LongBreak } = TimerFocusMode;
-    const { qtySprintForLongBreak } = currentActiveProfile;
-    const historiesLength = histories.length;
 
-    if (mode === Focusing) {
-      return Resting;
-    } else if (mode === Resting) {
-      if (historiesLength) {
-        const qtyRestsFinished =
-          histories.filter((item) => item.mode === Resting).length + 1;
+    if (mode === Focusing) return Resting;
 
-        if (qtyRestsFinished >= qtySprintForLongBreak) {
-          const lastLongBreakIndex = histories.findLastIndex(
-            (history) => history.mode === LongBreak,
-          );
+    if (mode === Resting) {
+      const completedRests =
+        history.filter((item) => item.mode === Resting).length + 1;
 
-          if (
-            lastLongBreakIndex > 0 ||
-            qtyRestsFinished === qtySprintForLongBreak
-          ) {
-            const partialHistories = histories
-              .slice(lastLongBreakIndex + 1)
-              .filter((item) => item.mode === Resting);
+      if (completedRests >= qtySprintForLongBreak) {
+        const lastLongBreakIndex = history.findLastIndex(
+          (h) => h.mode === LongBreak,
+        );
+        const recentRests = history
+          .slice(lastLongBreakIndex + 1)
+          .filter((item) => item.mode === Resting);
 
-            const qtyRestingPartials = partialHistories.length + 1;
-            if (qtyRestingPartials >= qtySprintForLongBreak) {
-              return LongBreak;
-            }
-          }
+        if (recentRests.length + 1 >= qtySprintForLongBreak) {
+          return LongBreak;
         }
       }
     }
+
     return Focusing;
   };
 
   const handleTimerCompletion = (skipped = false): TimerStatusType => {
+    const { history, timer } = currentActiveProfile;
     const updatedHistory = [
-      ...histories,
-      { ...currentTimerState, endTime: Date.now(), skipped },
+      ...history,
+      { ...timer, endTime: Date.now(), skipped },
     ];
-    const nextMode = getNextMode(currentTimerState.mode);
+    const nextMode = getNextMode(timer.mode);
     const remainingTime = getOriginalRemainingTime({
       mode: nextMode,
       profile: currentActiveProfile,
     });
-    setHistory(updatedHistory);
 
     const nextTimer: TimerStatusType = {
       remainingTime,
@@ -90,81 +80,67 @@ export const useTimerActions = (
       mode: nextMode,
     };
 
-    setCurrentTimerState(nextTimer);
     setLastUpdated(Date.now());
+    setCurrentActiveProfile({
+      ...currentActiveProfile,
+      history: updatedHistory,
+      timer: nextTimer,
+    });
+
     return nextTimer;
   };
 
-  onTimeWorkerMessage((e: TimerEventDetailIt) => {
-    const { action, value, lastUpdated } = e;
-    const timerState = value as TimerStatusType;
-
-    if (lastUpdated) {
-      setLastUpdated(lastUpdated);
-    }
-
-    if (action === "updateTimer") {
-      if (value) {
-        setCurrentTimerState(timerState);
-      }
-    }
-
-    if (action === "finished") {
-      handleTimerCompletion(false);
-    }
-  });
+  const checkCurrentProfileAlreadyStarted = () => {
+    const { timer } = currentActiveProfile;
+    return checkTimerAlreadyStarted({
+      timerStatus: timer,
+      profile: currentActiveProfile,
+    });
+  };
 
   const start = (): void => {
-    setLastUpdated(Date.now());
-
+    const { timer } = currentActiveProfile;
     const alreadyStarted = checkCurrentProfileAlreadyStarted();
 
-    if (!alreadyStarted) {
-      const newTimerState = {
-        ...currentTimerState,
-        isRunning: true,
-        startTime: Date.now(),
-      };
+    const newTimerState = {
+      ...timer,
+      isRunning: true,
+      startTime: alreadyStarted ? timer.startTime : Date.now(),
+    };
 
-      setCurrentTimerState(newTimerState);
-
-      startWorker(newTimerState);
-    } else {
-      const newTimerState = { ...currentTimerState, isRunning: true };
-      setCurrentTimerState(newTimerState);
-      startWorker(newTimerState);
-    }
+    setLastUpdated(Date.now());
+    setCurrentActiveProfile({ ...currentActiveProfile, timer: newTimerState });
+    startWorker(newTimerState);
     backgroundPlay(currentActiveProfile.ambienceSoundTrack, false);
   };
 
   const pause = (): void => {
+    const { timer } = currentActiveProfile;
+
     setPausedAt(Date.now());
     setLastUpdated(Date.now());
     pauseWorker();
-    setCurrentTimerState({ ...currentTimerState, isRunning: false });
-  };
-  const checkCurrentProfileAlreadyStarted = () => {
-    return checkTimerAlreadyStarted({
-      timerStatus: currentTimerState,
-      profile: currentActiveProfile,
+    setCurrentActiveProfile({
+      ...currentActiveProfile,
+      timer: { ...timer, isRunning: false },
     });
   };
+
   const reset = (): void => {
+    const { timer } = currentActiveProfile;
     const remainingTime = getOriginalRemainingTime({
-      mode: currentTimerState.mode,
+      mode: timer.mode,
       profile: currentActiveProfile,
     });
 
-    const resetTimerState = {
-      ...currentTimerState,
-      isRunning: false,
-      remainingTime,
-    };
+    const resetTimerState = { ...timer, isRunning: false, remainingTime };
 
-    setCurrentTimerState(resetTimerState);
-
-    resetWorker(resetTimerState);
     setLastUpdated(Date.now());
+    setCurrentActiveProfile({
+      ...currentActiveProfile,
+      timer: resetTimerState,
+    });
+    resetWorker(resetTimerState);
   };
 
   const skip = (): void => {
@@ -172,18 +148,58 @@ export const useTimerActions = (
     skipWorker(nextTimer);
   };
 
+  const interactionPrompt = Swal.mixin({
+    toast: true,
+    title: "Iniciar som ambiente?",
+    showCancelButton: true,
+    timer: 8000,
+    timerProgressBar: true,
+    confirmButtonText: "sim",
+    cancelButtonText: "Agora não",
+    allowOutsideClick: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   useEffect(() => {
-    if (currentTimerState.isRunning) {
-      setLastUpdated(Date.now());
-      resumeWorker(currentTimerState);
+    if (currentActiveProfile.allowAmbienceSound && !isBackgroundPlaying()) {
+      const showInteractionPrompt = async () => {
+        const result = await interactionPrompt.fire();
+        if (result.isConfirmed) {
+          backgroundPlay(currentActiveProfile.ambienceSoundTrack, false);
+        }
+      };
+      showInteractionPrompt();
     }
   }, []);
 
-  return {
-    start,
-    pause,
-    reset,
-    skip,
-    checkCurrentProfileAlreadyStarted,
-  };
+  useEffect(() => {
+    const { timer } = currentActiveProfile;
+
+    if (timer.isRunning) {
+      setLastUpdated(Date.now());
+      resumeWorker(timer);
+    }
+  }, []);
+
+  onTimeWorkerMessage((e: TimerEventDetailIt) => {
+    const { action, value, lastUpdated } = e;
+
+    if (lastUpdated) setLastUpdated(lastUpdated);
+
+    if (action === "updateTimer" && value) {
+      setCurrentActiveProfile({
+        ...currentActiveProfile,
+        timer: value as TimerStatusType,
+      });
+    }
+
+    if (action === "finished") {
+      handleTimerCompletion(false);
+    }
+  });
+
+  return { start, pause, reset, skip, checkCurrentProfileAlreadyStarted };
 };

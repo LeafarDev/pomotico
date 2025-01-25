@@ -25,6 +25,7 @@ export type ProfileType = {
     minutes: number;
     seconds: number;
   };
+  history: TimerStatusType[];
   qtySprintForLongBreak: number;
   allowTextNotifications: boolean;
   allowSoundNotifications: boolean;
@@ -56,11 +57,13 @@ export type ProfileToFormDataType = Omit<
 export interface TestAmbienceSoundButtonProps {
   $inactive: boolean;
 }
-export type AmbienceSoundOptions = {
+export type ambienceTrackType = {
   label: string;
   value: string;
   url: string;
   author: string;
   path: string;
   description: string;
-}[];
+};
+
+export type AmbienceSoundOptionsType = ambienceTrackType[];

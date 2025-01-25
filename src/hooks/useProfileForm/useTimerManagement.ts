@@ -15,8 +15,6 @@ export const useTimerManagement = ({
     currentActiveProfile,
     setCurrentActiveProfile,
     setProfiles,
-    activeTimer,
-    setActiveTimer,
     formMode,
     profiles,
     currentEditingProfile,
@@ -52,7 +50,10 @@ export const useTimerManagement = ({
     }
 
     useTimeWorkerActions.pauseWorker();
-    setActiveTimer({ ...activeTimer, isRunning: false });
+    setCurrentActiveProfile({
+      ...profile,
+      timer: { ...profile.timer, isRunning: false },
+    });
 
     if (currentActiveProfile.id !== profile.id) {
       const alreadyStarted = checkTimerAlreadyStarted({
@@ -62,7 +63,7 @@ export const useTimerManagement = ({
 
       if (alreadyStarted) {
         const updatedTimer = { ...profile.timer, isRunning: false };
-        setActiveTimer(updatedTimer);
+        setCurrentActiveProfile({ ...profile, timer: updatedTimer });
         useTimeWorkerActions.resetWorker(updatedTimer);
       } else {
         const remainingTime = getOriginalRemainingTime({
@@ -74,35 +75,33 @@ export const useTimerManagement = ({
           remainingTime,
           isRunning: false,
         };
-        setActiveTimer(updatedTimer);
+
+        setCurrentActiveProfile({ ...profile, timer: updatedTimer });
         useTimeWorkerActions.resetWorker(updatedTimer);
       }
-
-      setCurrentActiveProfile(profile);
     } else if (currentActiveProfile.id === profile.id) {
       const alreadyStarted = checkTimerAlreadyStarted({
         profile,
-        timerStatus: activeTimer,
+        timerStatus: profile.timer,
       });
 
       if (!alreadyStarted) {
         const remainingTime = getOriginalRemainingTime({
           profile,
-          mode: activeTimer.mode,
+          mode: profile.timer.mode,
         });
 
         const updatedTimer = {
-          ...activeTimer,
+          ...profile.timer,
           remainingTime,
         };
 
-        setActiveTimer(updatedTimer);
-      } else if (activeTimer.isRunning) {
-        useTimeWorkerActions.resetWorker(activeTimer);
-        useTimeWorkerActions.startWorker(activeTimer);
+        setCurrentActiveProfile({ ...profile, timer: updatedTimer });
+      } else if (profile.timer.isRunning) {
+        useTimeWorkerActions.resetWorker(profile.timer);
+        useTimeWorkerActions.startWorker(profile.timer);
+        setCurrentActiveProfile(profile);
       }
-
-      setCurrentActiveProfile(profile);
     }
     setProfiles(profiles);
   };

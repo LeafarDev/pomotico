@@ -8,9 +8,10 @@ import {
   TimerContent,
   TimeRemaining,
 } from "./timerStyle.ts";
-import { activeProfileTimerData } from "../../atoms/Timer.tsx";
+import { activeProfile } from "../../atoms/Timer.tsx";
 import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
 import { formatTime } from "../../utils/timeUtils.ts";
+import { ProfileStatus } from "../ProfileStatus/ProfileStatus.tsx";
 
 export const Timer = (): ReactElement => {
   const {
@@ -22,7 +23,9 @@ export const Timer = (): ReactElement => {
     statusDescriptionText,
     statusGif,
   } = useTimerPomodoro();
-  const [{ remainingTime, isRunning }] = useAtom(activeProfileTimerData);
+
+  const [currentActiveProfile] = useAtom(activeProfile);
+  const { remainingTime, isRunning } = currentActiveProfile.timer;
 
   return (
     <TimerContent>
@@ -38,6 +41,7 @@ export const Timer = (): ReactElement => {
         <button onClick={skip}>Pular</button>
         <button onClick={isRunning ? pause : start}>{startButtonText}</button>
       </ButtonsController>
+      <ProfileStatus></ProfileStatus>
     </TimerContent>
   );
 };

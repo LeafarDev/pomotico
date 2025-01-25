@@ -2,10 +2,8 @@ import {
   ProfileType,
   AmbienceTracks,
 } from "../../components/ConfigTimerFormTypes.ts";
-import { TimerStatusType } from "../../components/TimerTypes.ts";
 
 export interface UseFormStateIt {
-  activeTimer: TimerStatusType;
   ambianceSoundOptions: {
     author: string;
     description: string;
@@ -23,10 +21,6 @@ export interface UseFormStateIt {
   selectedSound: AmbienceTracks;
   testAmbienceButtonText: string;
   textNotificationsAllowed: boolean;
-
-  setActiveTimer: (
-    value: TimerStatusType | ((prev: TimerStatusType) => TimerStatusType),
-  ) => void;
   setAmbienceSoundChecked: (
     value: boolean | ((prev: boolean) => boolean),
   ) => void;

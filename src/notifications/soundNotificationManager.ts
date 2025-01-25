@@ -40,7 +40,10 @@ export const SoundNotificationManager = () => {
     }
   };
 
-  const playMultipleTimes = async (soundKey: string, repeatCount: number): Promise<void> => {
+  const playMultipleTimes = async (
+    soundKey: string,
+    repeatCount: number,
+  ): Promise<void> => {
     const sound = getSound(soundKey);
 
     if (sound) {

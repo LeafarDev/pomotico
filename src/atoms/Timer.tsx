@@ -6,7 +6,7 @@ import library from "../assets/songs/ambience/library.mp3";
 import rain from "../assets/songs/ambience/rain.mp3";
 import ravenholm from "../assets/songs/ambience/ravenholm.mp3";
 import {
-  AmbienceSoundOptions,
+  AmbienceSoundOptionsType,
   AmbienceTracks,
   ProfileType,
 } from "../types/components/ConfigTimerFormTypes.ts";
@@ -40,6 +40,7 @@ export const defaultProfile: ProfileType = {
   sprintTime: { minutes: 25, seconds: 0 },
   restTime: { minutes: 5, seconds: 0 },
   longBreakTime: { hours: 0, minutes: 35, seconds: 0 },
+  history: [],
   qtySprintForLongBreak: 4,
   allowTextNotifications: true,
   allowSoundNotifications: false,
@@ -48,15 +49,6 @@ export const defaultProfile: ProfileType = {
   timer: defaultTimer,
   active: true,
 };
-
-export const activeProfileTimerData = atomWithStorage<TimerStatusType>(
-  "timerData",
-  defaultTimer,
-  undefined,
-  {
-    getOnInit: true,
-  },
-);
 
 export const activeProfile = atomWithStorage<ProfileType>(
   "activeProfile",
@@ -70,17 +62,12 @@ export const profileTypes = atomWithStorage<ProfileType[]>("profileTypes", [
   defaultProfile,
 ]);
 
-export const sprintHistory = atomWithStorage<TimerStatusType[]>(
-  "sprintHistory",
-  [],
-);
-
 export const pausedTime = atomWithStorage(
   "pausedTime",
   undefined as number | undefined,
 );
 
-export const ambianceOptions = atomWithStorage<AmbienceSoundOptions>(
+export const ambianceOptions = atomWithStorage<AmbienceSoundOptionsType>(
   "ambianceOptions",
   [
     {

@@ -5,7 +5,6 @@ import {
   ambianceOptions,
   isConfigModalOpen,
   profileTypes,
-  activeProfileTimerData,
 } from "../../atoms/Timer";
 import {
   AmbienceTracks,
@@ -25,7 +24,6 @@ export const useFormStates = (): UseFormStateIt => {
     useAtom(activeProfile);
   const [currentEditingProfile, setCurrentEditingProfile] =
     useState<ProfileType>();
-  const [activeTimer, setActiveTimer] = useAtom(activeProfileTimerData);
   const [ambienceSoundChecked, setAmbienceSoundChecked] = useState(false);
   const [selectedSound, setSelectedSound] = useState<AmbienceTracks>(
     AmbienceTracks.City17,
@@ -48,8 +46,6 @@ export const useFormStates = (): UseFormStateIt => {
     setCurrentActiveProfile,
     currentEditingProfile,
     setCurrentEditingProfile,
-    activeTimer,
-    setActiveTimer,
     ambienceSoundChecked,
     setAmbienceSoundChecked,
     selectedSound,

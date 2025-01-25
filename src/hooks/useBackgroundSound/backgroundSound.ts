@@ -25,11 +25,11 @@ export const useBackgroundSound = (): UseBackgroundSoundIt => {
       }
 
       const trackPath = song.path;
-      
+
       if (soundInstance) {
         soundInstance.stop();
       }
-      
+
       soundInstance = new Howl({
         src: [trackPath],
         html5: true,
@@ -48,15 +48,24 @@ export const useBackgroundSound = (): UseBackgroundSoundIt => {
     }
   };
 
+  soundInstance?.playing();
   const backgroundStop = (): void => {
     if (soundInstance) {
       soundInstance.stop();
     }
   };
 
+  const isBackgroundPlaying = (): boolean => {
+    if (soundInstance) {
+      return soundInstance?.playing();
+    }
+    return false;
+  };
+
   return {
     backgroundPlay,
     backgroundPause,
     backgroundStop,
+    isBackgroundPlaying,
   };
 };

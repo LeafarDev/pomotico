@@ -85,6 +85,10 @@ export const useFormHandlers = ({
         : uuidv4();
 
     const newTimer = getTimer(dataFromForm);
+    let history: TimerStatusType[] = [];
+    if (formMode === "updating") {
+      history = currentEditingProfile?.history as TimerStatusType[];
+    }
 
     const formattedData: ProfileType = {
       id,
@@ -95,6 +99,7 @@ export const useFormHandlers = ({
         String(dataFromForm.qtySprintForLongBreak),
         10,
       ),
+      history: history,
       sprintTime: parseStringTime(dataFromForm.sprintTime),
       restTime: parseStringTime(dataFromForm.restTime),
       longBreakTime: parseStringTime(dataFromForm.longBreakTime) as {

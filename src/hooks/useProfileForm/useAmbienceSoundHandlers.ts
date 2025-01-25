@@ -26,10 +26,10 @@ export const useAmbienceSoundHandlers = ({
   const enableAmbienceTestButton = (): void => {
     setIsTestAmbienceButtonDisabled(false);
     setTestAmbienceButtonText("Ouvir");
-    backgroundStop();
   };
 
   const handleButtonTestSound = (): void => {
+    backgroundStop();
     disableAmbienceTestButton();
     backgroundPlay(selectedSound, true);
     setTimeout(() => {
