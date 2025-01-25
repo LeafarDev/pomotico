@@ -11,20 +11,19 @@ import { useTimerManagement } from "./useTimerManagement.ts";
 import { sprintFormSchema } from "../../components/ProfileConfiguration/configProfileFormValidation.ts";
 import { SoundNotificationManager } from "../../notifications/soundNotificationManager.ts";
 import { TextNotificationManager } from "../../notifications/textNotificationManager.ts";
-import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
 import { ProfileToFormDataType } from "../../types/components/ConfigTimerFormTypes.ts";
 import { UseProfileFormIt } from "../../types/hooks/useProfileForm/UseSprintFormLogicIt.ts";
 import { useBackgroundSound } from "../useBackgroundSound";
 
 export const useProfileForm = (): UseProfileFormIt => {
   const states = useFormStates();
-  const { sw } = useServiceWorker();
-  const { backgroundPlay, backgroundPause } = useBackgroundSound();
-  const { notify: soundNotify } = SoundNotificationManager(true);
+
+  const { backgroundPlay, backgroundStop } = useBackgroundSound();
+  const { notify: soundNotify } = SoundNotificationManager();
   const {
     isPermissionGranted: canSendTextNotification,
     requestPermission: requestTextPermission,
-  } = TextNotificationManager(sw);
+  } = TextNotificationManager();
   const {
     register,
     handleSubmit,
@@ -42,7 +41,7 @@ export const useProfileForm = (): UseProfileFormIt => {
   } = useAmbienceSoundHandlers({
     states,
     backgroundPlay,
-    backgroundPause,
+    backgroundStop,
   });
 
   const { resetForm, resetFormByProfileData } = UseResetForm({
@@ -67,7 +66,6 @@ export const useProfileForm = (): UseProfileFormIt => {
       states,
       canSendTextNotification,
       requestTextPermission,
-      sw,
       soundNotify,
     });
 

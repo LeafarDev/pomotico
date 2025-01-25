@@ -8,7 +8,7 @@ import {
 export const useAmbienceSoundHandlers = ({
   states,
   backgroundPlay,
-  backgroundPause,
+  backgroundStop,
 }: UseAmbienceSoundHandlersProps): UseAmbienceSoundHandlersIt => {
   const {
     setIsTestAmbienceButtonDisabled,
@@ -26,7 +26,7 @@ export const useAmbienceSoundHandlers = ({
   const enableAmbienceTestButton = (): void => {
     setIsTestAmbienceButtonDisabled(false);
     setTestAmbienceButtonText("Ouvir");
-    backgroundPause();
+    backgroundStop();
   };
 
   const handleButtonTestSound = (): void => {

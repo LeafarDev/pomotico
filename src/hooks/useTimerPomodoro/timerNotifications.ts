@@ -13,7 +13,6 @@ import {
 } from "../../utils/timeUtils.ts";
 
 export const useTimerNotifications = (
-  sw: ServiceWorkerRegistration | null,
   timerState: TimerStatusType,
   historyState: TimerStatusType[],
   pausedAt: number | undefined,
@@ -26,46 +25,42 @@ export const useTimerNotifications = (
     sendNotification,
     requestPermission: requestTextPermission,
     isPermissionGranted: canSendTextNotification,
-  } = TextNotificationManager(sw);
+  } = TextNotificationManager();
   const wakeUpTimeLimit = 2;
 
   const sendFinishedAlert = (mode: TimerFocusMode): void => {
-    if (sw) {
-      let title = "Sprint finalizada!";
-      let body = "Hora de descansar! Acione o modo descanso :)";
+    let title = "Sprint finalizada!";
+    let body = "Hora de descansar! Acione o modo descanso :)";
 
-      if (mode === TimerFocusMode.Resting) {
-        title = "Descanso finalizado";
-        body = "Vamos focar! Acione a próxima sprint";
-        soundNotify.endRest();
-      } else {
-        soundNotify.endFocus();
-      }
+    if (mode === TimerFocusMode.Resting) {
+      title = "Descanso finalizado";
+      body = "Vamos focar! Acione a próxima sprint";
+      soundNotify.endRest();
+    } else {
+      soundNotify.endFocus();
+    }
 
-      if (!canSendTextNotification()) {
-        requestTextPermission();
-      } else {
-        sendNotification(title, body);
-      }
+    if (!canSendTextNotification()) {
+      requestTextPermission();
+    } else {
+      sendNotification(title, body);
     }
   };
 
   const sendWakeUpAlert = (): void => {
-    if (sw) {
-      const title = "Volte aqui!!!";
-      const body = "Detectamos sua inatividade, volte ao foco";
+    const title = "Volte aqui!!!";
+    const body = "Detectamos sua inatividade, volte ao foco";
 
-      if (timerState.mode === TimerFocusMode.Resting) {
-        soundNotify.wakeUpFocus();
-      } else {
-        soundNotify.wakeUpRest();
-      }
+    if (timerState.mode === TimerFocusMode.Resting) {
+      soundNotify.wakeUpFocus();
+    } else {
+      soundNotify.wakeUpRest();
+    }
 
-      if (!canSendTextNotification()) {
-        requestTextPermission();
-      } else {
-        sendNotification(title, body);
-      }
+    if (!canSendTextNotification()) {
+      requestTextPermission();
+    } else {
+      sendNotification(title, body);
     }
   };
 
@@ -126,5 +121,5 @@ export const useTimerNotifications = (
         soundNotify.startFocus();
       }
     }
-  }, [timerState.startTime]);
+  }, [timerState.mode]);
 };

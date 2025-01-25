@@ -1,5 +1,10 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import city17 from "../assets/songs/ambience/city17.mp3";
+import forestNight from "../assets/songs/ambience/forestNight.mp3";
+import library from "../assets/songs/ambience/library.mp3";
+import rain from "../assets/songs/ambience/rain.mp3";
+import ravenholm from "../assets/songs/ambience/ravenholm.mp3";
 import {
   AmbienceSoundOptions,
   AmbienceTracks,
@@ -36,7 +41,7 @@ export const defaultProfile: ProfileType = {
   restTime: { minutes: 5, seconds: 0 },
   longBreakTime: { hours: 0, minutes: 35, seconds: 0 },
   qtySprintForLongBreak: 4,
-  allowTextNotifications: false,
+  allowTextNotifications: true,
   allowSoundNotifications: false,
   allowAmbienceSound: true,
   ambienceSoundTrack: AmbienceTracks.City17,
@@ -56,6 +61,10 @@ export const activeProfileTimerData = atomWithStorage<TimerStatusType>(
 export const activeProfile = atomWithStorage<ProfileType>(
   "activeProfile",
   defaultProfile,
+  undefined,
+  {
+    getOnInit: true,
+  },
 );
 export const profileTypes = atomWithStorage<ProfileType[]>("profileTypes", [
   defaultProfile,
@@ -79,6 +88,7 @@ export const ambianceOptions = atomWithStorage<AmbienceSoundOptions>(
       value: "city17",
       url: "https%3A//soundcloud.com/researcher_turtle/half-life-2-city-17-ambience",
       author: "sole",
+      path: city17,
       description: "Half-Life 2 - City 17 Ambience [1 Hour]",
     },
     {
@@ -86,6 +96,7 @@ export const ambianceOptions = atomWithStorage<AmbienceSoundOptions>(
       value: "forestNight",
       url: "https://soundcloud.com/mariuszpierog/frogs-sounds-forest-sounds-at-night-owls-crickets-for-sleep-study-relaxing-n018",
       author: "Mariusz Pierog",
+      path: forestNight,
       description:
         'Frogs sounds "Forest Sounds at Night", owls, crickets for sleep, study, relaxing #N018',
     },
@@ -94,6 +105,7 @@ export const ambianceOptions = atomWithStorage<AmbienceSoundOptions>(
       value: "rain",
       url: "https://soundcloud.com/relaxingwhitenoisesounds/pure-rain-1-hour-of-relaxing",
       author: "Relaxing White Noise Sounds",
+      path: rain,
       description:
         "Pure Rain: 1 Hour of Relaxing Rain Sounds for Study and Sleep",
     },
@@ -102,6 +114,7 @@ export const ambianceOptions = atomWithStorage<AmbienceSoundOptions>(
       value: "library",
       url: "https://soundcloud.com/user-538256880-946417747/library-ambience",
       author: "bqchypx",
+      path: library,
       description: "Library ambience",
     },
     {
@@ -109,6 +122,7 @@ export const ambianceOptions = atomWithStorage<AmbienceSoundOptions>(
       value: "ravenholm",
       url: "https://soundcloud.com/hexadecadent/half-life-2-ravenholm-ambience",
       author: "Hexadecadent",
+      path: ravenholm,
       description: "Half - Life 2 - Ravenholm Ambience",
     },
   ],

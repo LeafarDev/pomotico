@@ -36,3 +36,5 @@ export const differenceInMinutes = (date1: number, date2: number): number => {
 
   return differenceInMilliseconds / (1000 * 60);
 };
+
+export const isWeb = () => typeof window !== "undefined" && !!window.document;

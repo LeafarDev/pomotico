@@ -6,16 +6,14 @@ import { useTimerTab } from "./timerTab.ts";
 import { useTimerWorker } from "./useTimerWorker.ts";
 import { TimerPomodoroIt } from "../../types/hooks/TimerPomodoroIt.ts";
 import { useBackgroundSound } from "../useBackgroundSound";
-export const useTimerPomodoro = (
-  sw: ServiceWorkerRegistration | null,
-): TimerPomodoroIt => {
+export const useTimerPomodoro = (): TimerPomodoroIt => {
   const states = useTimerState();
 
   const { currentTimerState, histories, pausedAt } = states;
 
   const useTimeWorkerActions = useTimerWorker();
 
-  const { backgroundPlay, iframeRef } = useBackgroundSound();
+  const { backgroundPlay } = useBackgroundSound();
 
   const actions = useTimerActions(states, useTimeWorkerActions, backgroundPlay);
 
@@ -26,7 +24,6 @@ export const useTimerPomodoro = (
     );
 
   useTimerNotifications(
-    sw,
     currentTimerState,
     histories,
     pausedAt,
@@ -42,6 +39,5 @@ export const useTimerPomodoro = (
     startButtonText: getStartButtonText(),
     statusDescriptionText: getStatusText(),
     statusGif: getStatusGif(),
-    iframeRef,
   };
 };

@@ -61,5 +61,6 @@ export type AmbienceSoundOptions = {
   value: string;
   url: string;
   author: string;
+  path: string;
   description: string;
 }[];

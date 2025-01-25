@@ -1,46 +1,93 @@
-import { useAtom } from "jotai/index";
-import notificationIcon from "../assets/notification/notification-icon.png";
-import { activeProfile } from "../atoms/Timer.tsx";
+import { Capacitor } from "@capacitor/core";
+import { LocalNotifications } from "@capacitor/local-notifications";
+import Swal from "sweetalert2";
 
-import { TextNotificationManagerIt } from "../types/notifications/TextNotificationManagerIt.ts";
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
-export const TextNotificationManager = (
-  sw: ServiceWorkerRegistration | null,
-): TextNotificationManagerIt => {
-  if (!sw) {
-    console.log("ServiceWorkerRegistration undefined");
-  }
-
-  const defaulticon = notificationIcon;
+export const TextNotificationManager = () => {
+  const isWeb = Capacitor.getPlatform() === "web";
 
   const requestPermission = async (): Promise<void> => {
-    if (sw) {
-      await Notification.requestPermission();
+    if (isWeb) {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        Toast.fire({
+          icon: "success",
+          title: "Web notification permissions granted",
+        });
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Web notification permissions denied",
+        });
+      }
+    } else {
+      const { display } = await LocalNotifications.requestPermissions();
+      if (display === "granted") {
+        Toast.fire({
+          icon: "success",
+          title: "Native notification permissions granted",
+        });
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Native notification permissions denied",
+        });
+      }
     }
   };
 
-  const [{ allowTextNotifications }] = useAtom(activeProfile);
-
   const isPermissionGranted = (): boolean => {
-    return Notification.permission === "granted";
+    if (isWeb) {
+      return Notification.permission === "granted";
+    }
+    return true;
   };
 
-  const sendNotification = (
+  const sendNotification = async (
     title: string,
     body: string,
-    icon = defaulticon,
-  ): void => {
-    if (sw && allowTextNotifications && isPermissionGranted()) {
-      sw.showNotification(title, {
-        body,
-        icon,
+    icon?: string,
+  ): Promise<void> => {
+    if (isWeb) {
+      if (Notification.permission === "granted") {
+        new Notification(title, {
+          body,
+          icon,
+        });
+      } else {
+        Toast.fire({
+          icon: "warning",
+          title: "Permission not granted for web notifications",
+        });
+      }
+    } else {
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title,
+            body,
+            id: new Date().getTime(),
+            schedule: { at: new Date(new Date().getTime() + 1000) },
+          },
+        ],
       });
     }
   };
 
   return {
-    sendNotification,
     requestPermission,
     isPermissionGranted,
+    sendNotification,
   };
 };

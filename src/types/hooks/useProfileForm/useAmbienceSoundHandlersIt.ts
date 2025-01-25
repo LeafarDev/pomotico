@@ -5,7 +5,7 @@ import { AmbienceTracks } from "../../components/ConfigTimerFormTypes.ts";
 export interface UseAmbienceSoundHandlersProps {
   states: UseFormStateIt;
   backgroundPlay: (songValue: AmbienceTracks, testMode: boolean) => void;
-  backgroundPause: () => void;
+  backgroundStop: () => void;
 }
 
 export interface UseAmbienceSoundHandlersIt {

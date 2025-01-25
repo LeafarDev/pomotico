@@ -10,11 +10,9 @@ import {
 } from "./timerStyle.ts";
 import { activeProfileTimerData } from "../../atoms/Timer.tsx";
 import { useTimerPomodoro } from "../../hooks/useTimerPomodoro";
-import { useServiceWorker } from "../../serviceWorker/ServiceWorkerContext.tsx";
 import { formatTime } from "../../utils/timeUtils.ts";
 
 export const Timer = (): ReactElement => {
-  const { sw } = useServiceWorker();
   const {
     start,
     pause,
@@ -23,7 +21,7 @@ export const Timer = (): ReactElement => {
     startButtonText,
     statusDescriptionText,
     statusGif,
-  } = useTimerPomodoro(sw);
+  } = useTimerPomodoro();
   const [{ remainingTime, isRunning }] = useAtom(activeProfileTimerData);
 
   return (

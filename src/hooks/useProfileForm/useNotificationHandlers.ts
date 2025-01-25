@@ -6,7 +6,6 @@ import {
 
 export const useNotificationHandlers = ({
   states,
-  sw,
   canSendTextNotification,
   requestTextPermission,
   soundNotify,
@@ -17,13 +16,11 @@ export const useNotificationHandlers = ({
     e: ChangeEvent<HTMLInputElement>,
   ): Promise<void> => {
     if (e.target.checked) {
-      if (sw) {
-        const canSend = canSendTextNotification();
-        if (!canSend) {
-          await requestTextPermission();
-        } else {
-          setTextNotificationsAllowed(true);
-        }
+      const canSend = canSendTextNotification();
+      if (!canSend) {
+        await requestTextPermission();
+      } else {
+        setTextNotificationsAllowed(true);
       }
       return;
     }
@@ -43,14 +40,12 @@ export const useNotificationHandlers = ({
   };
 
   useEffect(() => {
-    if (sw) {
-      if (currentActiveProfile?.allowTextNotifications) {
-        setTextNotificationsAllowed(canSendTextNotification());
-      } else {
-        setTextNotificationsAllowed(false);
-      }
+    if (currentActiveProfile?.allowTextNotifications) {
+      setTextNotificationsAllowed(canSendTextNotification());
+    } else {
+      setTextNotificationsAllowed(false);
     }
-  }, [sw]);
+  }, [currentActiveProfile]);
 
   return {
     handleTextNotificationChange,

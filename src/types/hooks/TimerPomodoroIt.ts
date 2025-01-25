@@ -1,5 +1,3 @@
-import { MutableRefObject } from "react";
-
 export interface TimerPomodoroIt {
   start: () => void;
   pause: () => void;
@@ -8,5 +6,4 @@ export interface TimerPomodoroIt {
   startButtonText: string;
   statusDescriptionText: string;
   statusGif: string;
-  iframeRef: MutableRefObject<HTMLIFrameElement | null>;
 }
