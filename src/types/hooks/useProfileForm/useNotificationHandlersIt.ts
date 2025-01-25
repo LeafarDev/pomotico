@@ -4,7 +4,7 @@ import { soundNotifyType } from "../../notifications/SoundNotificationManagerIt.
 
 export interface UseNotificationHandlersProps {
   states: UseFormStateIt;
-  canSendTextNotification: () => boolean;
+  canSendTextNotification: () => Promise<boolean>;
   requestTextPermission: () => Promise<void>;
   soundNotify: soundNotifyType;
 }

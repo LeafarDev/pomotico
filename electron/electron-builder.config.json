@@ -19,7 +19,7 @@
     "icon": "assets/appIcon.ico"
   },
   "mac": {
-    "category": "your.app.category.type",
+    "category": "public.app-category.productivity",
     "target": "dmg"
   }
 }

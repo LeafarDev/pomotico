@@ -40,11 +40,16 @@ export const useNotificationHandlers = ({
   };
 
   useEffect(() => {
-    if (currentActiveProfile?.allowTextNotifications) {
-      setTextNotificationsAllowed(canSendTextNotification());
-    } else {
-      setTextNotificationsAllowed(false);
-    }
+    const checkPermissions = async () => {
+      if (currentActiveProfile?.allowTextNotifications) {
+        const permissionGranted = await canSendTextNotification();
+        setTextNotificationsAllowed(permissionGranted);
+      } else {
+        setTextNotificationsAllowed(false);
+      }
+    };
+
+    checkPermissions();
   }, [currentActiveProfile]);
 
   return {

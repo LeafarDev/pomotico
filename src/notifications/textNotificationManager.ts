@@ -32,26 +32,36 @@ export const TextNotificationManager = () => {
         });
       }
     } else {
-      const { display } = await LocalNotifications.requestPermissions();
-      if (display === "granted") {
-        Toast.fire({
-          icon: "success",
-          title: "Native notification permissions granted",
-        });
-      } else {
+      try {
+        const { display } = await LocalNotifications.requestPermissions();
+        if (display === "granted") {
+          Toast.fire({
+            icon: "success",
+            title: "Native notification permissions granted",
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: "Native notification permissions denied",
+          });
+        }
+      } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "Native notification permissions denied",
+          title: "Error requesting permission for native notifications",
         });
       }
     }
   };
 
-  const isPermissionGranted = (): boolean => {
+  const isPermissionGranted = async (): Promise<boolean> => {
     if (isWeb) {
       return Notification.permission === "granted";
+    } else {
+      // For native (Capacitor), check the permission using LocalNotifications
+      const { display } = await LocalNotifications.requestPermissions();
+      return display === "granted";
     }
-    return true;
   };
 
   const sendNotification = async (
@@ -78,7 +88,7 @@ export const TextNotificationManager = () => {
             title,
             body,
             id: Math.floor(new Date().getTime() / 1000),
-            schedule: { at: new Date(new Date().getTime() + 1000) },
+            schedule: { at: new Date(new Date().getTime() + 100) },
           },
         ],
       });

@@ -7,7 +7,7 @@ const config: CapacitorElectronConfig = {
   electron: {
     trayIconAndMenuEnabled: true,
     splashScreenEnabled: true,
-    splashScreenImageName: "splash.png",
+    splashScreenImageName: "splash.gif",
   },
   plugins: {
     LocalNotifications: {
