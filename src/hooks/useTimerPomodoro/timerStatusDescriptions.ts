@@ -11,7 +11,7 @@ export const useTimerStatusDescriptions = (
   states: UseTimerStateIt,
   checkAlreadyStarted: () => boolean,
 ): TimerTextDescriptionStatusIt => {
-  const { currentTimerState } = states;
+  const { currentTimerState, currentActiveProfile } = states;
 
   const getStartButtonText = (): string => {
     const mode = currentTimerState.mode;
@@ -32,18 +32,18 @@ export const useTimerStatusDescriptions = (
   const getStatusText = (): string => {
     const mode = currentTimerState.mode;
     const { Focusing, Resting } = TimerFocusMode;
-
+    const profile = currentActiveProfile.title;
     if (!currentTimerState.isRunning) {
-      return "Aguardando";
+      return profile + ":Aguardando";
     }
 
     if (mode === Focusing) {
-      return "Focando";
+      return profile + ":Focando";
     } else if (mode === Resting) {
-      return "Descanso rápido";
+      return profile + ":Descanso rápido";
     }
 
-    return "Pausa longa";
+    return profile + ":Pausa longa";
   };
 
   const getStatusGif = (): string => {
