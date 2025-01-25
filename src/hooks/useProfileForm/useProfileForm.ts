@@ -19,11 +19,13 @@ export const useProfileForm = (): UseProfileFormIt => {
   const states = useFormStates();
 
   const { backgroundPlay, backgroundStop } = useBackgroundSound();
-  const { notify: soundNotify } = SoundNotificationManager();
+  const { notify: soundNotify } = SoundNotificationManager(
+    states.currentActiveProfile,
+  );
   const {
     isPermissionGranted: canSendTextNotification,
     requestPermission: requestTextPermission,
-  } = TextNotificationManager();
+  } = TextNotificationManager(states.currentActiveProfile);
   const {
     register,
     handleSubmit,

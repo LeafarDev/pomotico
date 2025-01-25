@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import Swal from "sweetalert2";
+import { ProfileType } from "../types/components/ConfigTimerFormTypes.ts";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -14,7 +15,7 @@ const Toast = Swal.mixin({
   },
 });
 
-export const TextNotificationManager = () => {
+export const TextNotificationManager = (currentActiveProfile: ProfileType) => {
   const isWeb = Capacitor.getPlatform() === "web";
 
   const requestPermission = async (): Promise<void> => {
@@ -58,7 +59,6 @@ export const TextNotificationManager = () => {
     if (isWeb) {
       return Notification.permission === "granted";
     } else {
-      // For native (Capacitor), check the permission using LocalNotifications
       const { display } = await LocalNotifications.requestPermissions();
       return display === "granted";
     }
@@ -69,29 +69,31 @@ export const TextNotificationManager = () => {
     body: string,
     icon?: string,
   ): Promise<void> => {
-    if (isWeb) {
-      if (Notification.permission === "granted") {
-        new Notification(title, {
-          body,
-          icon,
-        });
+    if (currentActiveProfile.allowTextNotifications) {
+      if (isWeb) {
+        if (Notification.permission === "granted") {
+          new Notification(title, {
+            body,
+            icon,
+          });
+        } else {
+          Toast.fire({
+            icon: "warning",
+            title: "Permission not granted for web notifications",
+          });
+        }
       } else {
-        Toast.fire({
-          icon: "warning",
-          title: "Permission not granted for web notifications",
+        await LocalNotifications.schedule({
+          notifications: [
+            {
+              title,
+              body,
+              id: Math.floor(new Date().getTime() / 1000),
+              schedule: { at: new Date(new Date().getTime() + 100) },
+            },
+          ],
         });
       }
-    } else {
-      await LocalNotifications.schedule({
-        notifications: [
-          {
-            title,
-            body,
-            id: Math.floor(new Date().getTime() / 1000),
-            schedule: { at: new Date(new Date().getTime() + 100) },
-          },
-        ],
-      });
     }
   };
 

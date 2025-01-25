@@ -6,8 +6,9 @@ import startFocusWav from "../assets/songs/startFocus.wav";
 import startRestWav from "../assets/songs/startRest.wav";
 import wakeUpFocusAlertWav from "../assets/songs/wakeupfocustalert.wav";
 import wakeUpRestAlertWav from "../assets/songs/wakeuprestalert.wav";
+import { ProfileType } from "../types/components/ConfigTimerFormTypes.ts";
 
-export const SoundNotificationManager = () => {
+export const SoundNotificationManager = (currentActiveProfile: ProfileType) => {
   const getSound = (soundKey: string) => {
     const soundFiles: { [key: string]: string } = {
       activateNotification: activateNotificationWav,
@@ -26,47 +27,53 @@ export const SoundNotificationManager = () => {
     return null;
   };
 
-  const play = async (soundKey: string): Promise<void> => {
-    const sound = getSound(soundKey);
-
-    if (sound) {
-      try {
-        sound.play();
-      } catch (error) {
-        console.error(`Failed to play sound ${soundKey}:`, error);
+  const play = async (
+    soundKey: string,
+    testMode: boolean = false,
+  ): Promise<void> => {
+    if (currentActiveProfile.allowSoundNotifications || testMode) {
+      const sound = getSound(soundKey);
+      if (sound) {
+        try {
+          sound.play();
+        } catch (error) {
+          console.error(`Failed to play sound ${soundKey}:`, error);
+        }
+      } else {
+        console.error(`Sound ${soundKey} not found.`);
       }
-    } else {
-      console.error(`Sound ${soundKey} not found.`);
     }
   };
 
   const playMultipleTimes = async (
     soundKey: string,
     repeatCount: number,
+    testMode: boolean = false,
   ): Promise<void> => {
-    const sound = getSound(soundKey);
+    if (currentActiveProfile.allowSoundNotifications || testMode) {
+      const sound = getSound(soundKey);
+      if (sound) {
+        let count = 0;
+        const playNext = () => {
+          count++;
+          if (count < repeatCount) {
+            sound.seek(0);
+            sound.play();
+          } else {
+            sound.off("end", playNext);
+          }
+        };
 
-    if (sound) {
-      let count = 0;
-      const playNext = () => {
-        count++;
-        if (count < repeatCount) {
-          sound.seek(0);
-          sound.play();
-        } else {
-          sound.off("end", playNext);
-        }
-      };
-
-      sound.on("end", playNext);
-      sound.play();
-    } else {
-      console.error(`Sound ${soundKey} not found.`);
+        sound.on("end", playNext);
+        sound.play();
+      } else {
+        console.error(`Sound ${soundKey} not found.`);
+      }
     }
   };
 
   const notify = {
-    activateNotification: () => play("activateNotification"),
+    activateNotification: () => play("activateNotification", true),
     startFocus: () => play("startFocus"),
     endFocus: () => playMultipleTimes("endFocus", 3),
     startRest: () => play("startRest"),

@@ -17,12 +17,13 @@ export const useTimerNotifications = (
 ): void => {
   const [lastNotified, setLastNotified] = useAtom(lastEndedNotified);
 
-  const { notify: soundNotify } = SoundNotificationManager();
+  const { notify: soundNotify } =
+    SoundNotificationManager(currentActiveProfile);
   const {
     sendNotification,
     requestPermission: requestTextPermission,
     isPermissionGranted: canSendTextNotification,
-  } = TextNotificationManager();
+  } = TextNotificationManager(currentActiveProfile);
   const wakeUpTimeLimit = 2;
 
   const sendFinishedAlert = (mode: TimerFocusMode): void => {
