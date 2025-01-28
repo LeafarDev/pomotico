@@ -16,6 +16,7 @@ import {
 } from "../types/components/TimerTypes.ts";
 
 export const isConfigModalOpen = atom(false);
+export const isGraphModalOpen = atom(false);
 
 export const lastUpdatedTime = atomWithStorage("lastUpdatedTime", -1);
 export const lastEndedNotified = atomWithStorage(

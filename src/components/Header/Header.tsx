@@ -9,17 +9,17 @@ import {
   NavButtons,
 } from "./headerStyle";
 import ClockIcon from "../../assets/pomotico-logo-white.svg";
-import { isConfigModalOpen } from "../../atoms/Timer.tsx";
+import { isConfigModalOpen, isGraphModalOpen } from "../../atoms/Timer.tsx";
 
 export const Header = (): ReactElement => {
   const [, setIsModalOpen] = useAtom(isConfigModalOpen);
-
+  const [, setIsGraphModalOpen] = useAtom(isGraphModalOpen);
   const openConfigModal = (): void => {
     setIsModalOpen(true);
   };
 
-  const handleActivitiesClick = (): void => {
-    console.log("Atividades clicked!");
+  const openGraphModel = (): void => {
+    setIsGraphModalOpen(true);
   };
 
   return (
@@ -29,7 +29,7 @@ export const Header = (): ReactElement => {
         <span>Pomotico</span>
       </LogoContainer>
       <NavButtons>
-        <button onClick={handleActivitiesClick}>
+        <button onClick={openGraphModel}>
           <MdAutoGraph />
           <span>Atividades</span>
         </button>

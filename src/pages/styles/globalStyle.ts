@@ -190,7 +190,7 @@ export const GlobalStyle = createGlobalStyle`
         border-radius: 8px;
         color: white;
         max-width: 90%;  /* Ensure the modal does not take up too much space on smaller screens */
-        width: 500px;    /* Set a base width for larger screens */
+        width: auto;     /* Allow the modal width to grow with content */
         margin: 0 auto;  /* Center the modal horizontally */
         display: flex;
         flex-direction: column;
@@ -198,31 +198,30 @@ export const GlobalStyle = createGlobalStyle`
         position: relative;
         max-height: 80vh; /* Prevent the modal from being taller than 80% of the viewport */
         overflow-y: auto; /* Add scroll if content overflows */
+        box-sizing: border-box; /* Ensure padding does not affect width */
     }
 
     /* Media query for screens wider than 768px (tablets and up) */
     @media (min-width: 768px) {
         .modal-content {
-            max-width: 70%; /* Use less space on larger screens */
-            width: 600px;   /* Adjust the base width */
+            max-width: 90%; /* Use less space on larger screens */
         }
     }
 
     /* Media query for screens wider than 1024px (desktops and up) */
     @media (min-width: 1024px) {
         .modal-content {
-            max-width: 60%; /* Further reduce the width for larger screens */
-            width: 700px;   /* Adjust the base width for desktops */
+            max-width: 85%; /* Further reduce the width for larger screens */
         }
     }
 
     /* Media query for screens wider than 1440px (large desktops) */
     @media (min-width: 1440px) {
         .modal-content {
-            max-width: 50%; /* Reduce width further for large desktops */
-            width: 800px;   /* Increase the base width for large screens */
+            max-width: 70%; /* Reduce width further for large desktops */
         }
     }
+
     /* Modal Overlay */
     .modal-overlay {
         background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
@@ -239,11 +238,12 @@ export const GlobalStyle = createGlobalStyle`
     /* For smaller screens, adjust the modal size */
     @media (max-width: 600px) {
         .modal-content {
-            width: 90%;  /* Make modal width smaller on smaller screens */
+            width: auto;  /* Allow modal to grow with content */
             max-width: 95%;  /* Prevent it from going out of the screen */
         }
     }
-    
+
+
     :root {
         color-scheme: dark;
     }

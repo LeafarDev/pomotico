@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import Modal from "react-modal";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { Header } from "./components/Header/Header.tsx";
+import { HistoricalGraph } from "./components/HistoricalGraph/HistoricalGraph.tsx";
 import ConfigProfileForm from "./components/ProfileConfiguration/ConfigProfileForm.tsx";
 import App from "./pages/App.tsx";
 import "./index.css";
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </Routes>
       </BrowserRouter>
       <ConfigProfileForm />
+      <HistoricalGraph />
     </ServiceWorkerProvider>
   </React.StrictMode>,
 );
