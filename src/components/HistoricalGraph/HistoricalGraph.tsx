@@ -43,16 +43,16 @@ export const HistoricalGraph = (): ReactElement => {
         <div>
           <TabsContainer>
             <TabButton
-              onClick={() => setActiveTab("months")}
-              active={activeTab === "months"}
-            >
-              {isPhoneScreen ? "Últimos 6 meses" : "Últimos 12 meses"}
-            </TabButton>
-            <TabButton
               onClick={() => setActiveTab("days")}
               active={activeTab === "days"}
             >
               {isPhoneScreen ? "Últimos 5 dias" : "Últimos 12 dias"}
+            </TabButton>
+            <TabButton
+              onClick={() => setActiveTab("months")}
+              active={activeTab === "months"}
+            >
+              {isPhoneScreen ? "Últimos 6 meses" : "Últimos 12 meses"}
             </TabButton>
           </TabsContainer>
           {activeTab === "months" && (

@@ -22,7 +22,13 @@ export const useFormHandlers = ({
   resetForm,
   closeModal,
 }: UseFormHandlerProps): UseFormHandlersIt => {
-  const { formMode, setFormMode, currentEditingProfile } = states;
+  const {
+    formMode,
+    setFormMode,
+    currentEditingProfile,
+    profiles,
+    setProfiles,
+  } = states;
 
   const Toast = Swal.mixin({
     toast: true,
@@ -40,6 +46,31 @@ export const useFormHandlers = ({
   ): void => {
     const selectedProfileId = e.target.value;
     resetForm(selectedProfileId);
+  };
+
+  const handleDeleteProfile = async () => {
+    const deletePrompt = Swal.mixin({
+      toast: true,
+      title: "Deletar perfil?",
+      text: "Todo histórico será excluído do perfil será excluído",
+      showCancelButton: true,
+      timerProgressBar: true,
+      confirmButtonText: "sim",
+      cancelButtonText: "não",
+      allowOutsideClick: true,
+    });
+
+    const result = await deletePrompt.fire();
+    if (result.isConfirmed) {
+      setProfiles(
+        profiles.filter((profile) => profile.id !== currentEditingProfile?.id),
+      );
+      closeModal();
+      Toast.fire({
+        icon: "success",
+        title: "Perfil excluído",
+      });
+    }
   };
 
   const handleCreateNewProfile = () => {
@@ -126,5 +157,6 @@ export const useFormHandlers = ({
     handleCreateNewProfile,
     onSubmit,
     handleSelectProfileOnChange,
+    handleDeleteProfile,
   };
 };

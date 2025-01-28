@@ -71,14 +71,18 @@ export const useProfileForm = (): UseProfileFormIt => {
       soundNotify,
     });
 
-  const { onSubmit, handleCreateNewProfile, handleSelectProfileOnChange } =
-    useFormHandlers({
-      states,
-      resetForm,
-      resetFormByProfileData,
-      swapProfile,
-      closeModal,
-    });
+  const {
+    onSubmit,
+    handleCreateNewProfile,
+    handleSelectProfileOnChange,
+    handleDeleteProfile,
+  } = useFormHandlers({
+    states,
+    resetForm,
+    resetFormByProfileData,
+    swapProfile,
+    closeModal,
+  });
 
   return {
     states,
@@ -95,5 +99,6 @@ export const useProfileForm = (): UseProfileFormIt => {
     handleButtonTestSound,
     handleSoundChange,
     handleAllowAmbienceSoundChange,
+    handleDeleteProfile,
   };
 };

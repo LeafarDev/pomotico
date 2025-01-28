@@ -8,6 +8,7 @@ import {
   FormWrapper,
   InputGroup,
   TestAmbienceSoundButton,
+  DeleteProfileButton,
 } from "./profileFormStyle.ts";
 import { useProfileForm } from "../../hooks/useProfileForm/useProfileForm.ts";
 
@@ -18,6 +19,7 @@ const ConfigProfileForm = (): ReactElement => {
     closeModal,
     handleSelectProfileOnChange,
     handleCreateNewProfile,
+    handleDeleteProfile,
     registerWithMask,
     errors,
     handleTextNotificationChange,
@@ -82,6 +84,13 @@ const ConfigProfileForm = (): ReactElement => {
                 <CreateProfileButton onClick={handleCreateNewProfile}>
                   Criar Novo Perfil
                 </CreateProfileButton>
+                {profiles.length > 1 && !currentEditingProfile.active ? (
+                  <DeleteProfileButton onClick={handleDeleteProfile}>
+                    Deletar Perfil
+                  </DeleteProfileButton>
+                ) : (
+                  <></>
+                )}
               </div>
             </InputGroup>
           ) : (

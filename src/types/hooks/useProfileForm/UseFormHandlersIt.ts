@@ -14,6 +14,7 @@ export interface UseFormHandlerProps {
 }
 export interface UseFormHandlersIt {
   handleCreateNewProfile: () => void;
+  handleDeleteProfile: () => Promise<void>;
   handleSelectProfileOnChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   onSubmit: (dataFromForm: ProfileToFormDataType) => void;
 }

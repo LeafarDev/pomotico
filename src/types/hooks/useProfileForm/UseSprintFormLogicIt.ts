@@ -23,6 +23,7 @@ export interface UseProfileFormIt {
   errors: FieldErrors<ProfileToFormDataType>;
   onSubmit: (data: ProfileToFormDataType) => void;
   handleCreateNewProfile: () => void;
+  handleDeleteProfile: () => Promise<void>;
   handleSelectProfileOnChange: (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => void;

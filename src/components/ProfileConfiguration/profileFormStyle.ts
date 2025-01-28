@@ -50,6 +50,22 @@ export const CreateProfileButton = styled.div`
   }
 `;
 
+export const DeleteProfileButton = styled.div`
+  padding: 8px 16px;
+  background-color: rgba(251, 0, 0, 0.75);
+  color: #fff;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  text-align: center;
+  user-select: none;
+
+  &:hover {
+    background-color: rgba(195, 45, 45, 0.75);
+  }
+`;
+
 export const TestAmbienceSoundButton = styled.div<TestAmbienceSoundButtonProps>`
   padding: 8px 16px;
   background-color: ${(props) => (props.$inactive ? "#1c8591" : "#6c6e73")};

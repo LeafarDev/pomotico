@@ -7,7 +7,7 @@ import { UseHistoricalGraphReturn } from "../../types/hooks/useHistoricalGraph.t
 export const useHistoricalGraph = (): UseHistoricalGraphReturn => {
   const [isModalOpen, setIsModalOpen] = useAtom(isGraphModalOpen);
   const [profiles] = useAtom(profileTypes);
-  const [activeTab, setActiveTab] = useState<"months" | "days">("months");
+  const [activeTab, setActiveTab] = useState<"months" | "days">("days");
   const [chartDimensions, setChartDimensions] = useState({
     width: 800,
     height: 400,
