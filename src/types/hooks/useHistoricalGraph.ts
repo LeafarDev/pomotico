@@ -1,3 +1,5 @@
+import { ScaleLinear } from "@visx/vendor/d3-scale";
+import React from "react";
 import { ProfileType } from "../components/ConfigTimerFormTypes.ts";
 
 interface HistoricalGraphData {
@@ -23,8 +25,8 @@ export interface UseHistoricalGraphReturn {
   setActiveTab: React.Dispatch<React.SetStateAction<"months" | "days">>;
   adjustedMonthlyData: ProfileData[];
   adjustedDailyData: ProfileData[];
-  profileColorScale: (value: number) => string;
-  profiles: ProfileType[]; // Replace `any[]` with the actual type of your profiles
+  profileColorScale: ScaleLinear<string, string>;
+  profiles: ProfileType[];
   chartDimensions: ChartDimensions;
   isPhoneScreen: boolean;
 }
